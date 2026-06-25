@@ -13,10 +13,7 @@ See [`chrome-extension/README.md`](chrome-extension/README.md) for details.
 
 ## Allowed on X
 
-- https://x.com/i/lists/2062211801987641463
-- https://x.com/i/lists/2047478346116686143
-- https://x.com/i/lists/2059974188396351918
-- https://x.com/i/lists/2063220039365415064
+- The four list URLs above, including subpages like `/members`
 - Direct tweet links, e.g. `https://x.com/user/status/1234567890`
 
 Everything else on x.com shows a full-page overlay with four buttons to your lists.

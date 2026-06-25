@@ -17,7 +17,7 @@ function isAllowedXUrl(href) {
 
   const path = url.pathname.replace(/\/+$/, "") || "/";
 
-  const listMatch = path.match(/^\/i\/lists\/(\d+)$/);
+  const listMatch = path.match(/^\/i\/lists\/(\d+)(?:\/.*)?$/);
   if (listMatch && ALLOWED_LIST_IDS.has(listMatch[1])) {
     return true;
   }

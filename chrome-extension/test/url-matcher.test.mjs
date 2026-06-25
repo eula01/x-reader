@@ -15,6 +15,7 @@ const allowedLists = [
 for (const url of allowedLists) {
   assert.equal(isAllowedXUrl(url), true, `should allow ${url}`);
   assert.equal(isAllowedXUrl(`${url}/`), true, `should allow ${url}/`);
+  assert.equal(isAllowedXUrl(`${url}/members`), true, `should allow ${url}/members`);
 }
 
 const allowedTweets = [
@@ -37,7 +38,7 @@ const blocked = [
   "https://x.com/KobeissiLetter",
   "https://x.com/KobeissiLetter/with_replies",
   "https://x.com/i/lists/9999999999999999999",
-  "https://x.com/i/lists/2047478346116686143/members",
+  "https://x.com/i/lists/9999999999999999999/members",
   "https://x.com/search?q=test",
   "https://x.com/settings",
   "https://x.com/compose/post",
