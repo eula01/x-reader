@@ -85,7 +85,7 @@ async function fetchListTweets(
     `https://api.x.com/2/lists/${listId}/tweets?${params}`,
     {
       headers: { Authorization: authorization },
-      next: { revalidate: 60 },
+      cache: "no-store",
     }
   );
 
