@@ -4,6 +4,9 @@
  * @returns {boolean}
  */
 function isAllowedXUrl(href) {
+  const X_HOSTS = globalThis.X_HOSTS;
+  const ALLOWED_LIST_IDS = globalThis.ALLOWED_LIST_IDS;
+
   let url;
   try {
     url = new URL(href);
@@ -33,6 +36,13 @@ function isAllowedXUrl(href) {
   return false;
 }
 
+globalThis.isAllowedXUrl = isAllowedXUrl;
+
 if (typeof module !== "undefined") {
-  module.exports = { isAllowedXUrl, ALLOWED_LISTS, ALLOWED_LIST_IDS, X_HOSTS };
+  module.exports = {
+    isAllowedXUrl,
+    ALLOWED_LISTS: globalThis.ALLOWED_LISTS,
+    ALLOWED_LIST_IDS: globalThis.ALLOWED_LIST_IDS,
+    X_HOSTS: globalThis.X_HOSTS,
+  };
 }

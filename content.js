@@ -1,5 +1,8 @@
 const OVERLAY_ID = "x-list-focus-overlay";
 const PAGE_HOOK_ID = "x-list-focus-page-hook";
+const ALLOWED_LISTS = globalThis.ALLOWED_LISTS;
+const sessionTitles = Object.create(null);
+let titleWatchTimer = null;
 
 function injectPageHook() {
   if (document.getElementById(PAGE_HOOK_ID)) return;
@@ -9,6 +12,80 @@ function injectPageHook() {
   script.src = chrome.runtime.getURL("page-hook.js");
   script.onload = () => script.remove();
   (document.documentElement || document.head).appendChild(script);
+}
+
+function parseListTitleFromDocument() {
+  const heading =
+    document.querySelector('[data-testid="primaryColumn"] h2[role="heading"]') ||
+    document.querySelector('[data-testid="primaryColumn"] h2');
+  if (heading?.textContent?.trim()) {
+    return heading.textContent.trim();
+  }
+
+  const titleMatch = document.title.match(
+    /(?:\([^)]+\)\s*)?(?:@[^/]+\/)?(.+?)\s+\/\s+X/i
+  );
+  return titleMatch?.[1]?.trim() || null;
+}
+
+function getCurrentListId() {
+  const match = location.pathname.match(/^\/i\/lists\/(\d+)/);
+  return match?.[1] ?? null;
+}
+
+function getListButtonLabel(list) {
+  if (list.title) return list.title;
+  if (sessionTitles[list.id]) return sessionTitles[list.id];
+  return `List …${list.id.slice(-4)}`;
+}
+
+function refreshOverlayButtons() {
+  const overlay = document.getElementById(OVERLAY_ID);
+  if (!overlay) return;
+
+  for (const link of overlay.querySelectorAll(".xlf-btn")) {
+    const list = ALLOWED_LISTS.find((item) => item.id === link.dataset.listId);
+    if (list) link.textContent = getListButtonLabel(list);
+  }
+}
+
+function cacheTitleForCurrentListPage() {
+  const listId = getCurrentListId();
+  if (!listId || !globalThis.ALLOWED_LIST_IDS.has(listId)) return;
+
+  const list = ALLOWED_LISTS.find((item) => item.id === listId);
+  if (list?.title) return;
+
+  const scraped = parseListTitleFromDocument();
+  if (!scraped || sessionTitles[listId] === scraped) return;
+
+  sessionTitles[listId] = scraped;
+  refreshOverlayButtons();
+}
+
+function watchCurrentListTitle() {
+  if (titleWatchTimer) {
+    clearInterval(titleWatchTimer);
+    titleWatchTimer = null;
+  }
+
+  if (!isAllowedXUrl(location.href) || !getCurrentListId()) return;
+
+  let attempts = 0;
+  titleWatchTimer = setInterval(() => {
+    if (!isAllowedXUrl(location.href) || !getCurrentListId()) {
+      clearInterval(titleWatchTimer);
+      titleWatchTimer = null;
+      return;
+    }
+
+    cacheTitleForCurrentListPage();
+    attempts += 1;
+    if (attempts >= 20) {
+      clearInterval(titleWatchTimer);
+      titleWatchTimer = null;
+    }
+  }, 500);
 }
 
 function ensureOverlay() {
@@ -36,7 +113,7 @@ function ensureOverlay() {
     link.className = "xlf-btn";
     link.href = list.url;
     link.dataset.listId = list.id;
-    link.textContent = list.title || `List …${list.id.slice(-4)}`;
+    link.textContent = getListButtonLabel(list);
     buttons.appendChild(link);
   }
 
@@ -53,8 +130,7 @@ function showOverlay() {
     (document.documentElement || document.body).appendChild(overlay);
   }
   document.documentElement.classList.add("xlf-blocked");
-  updateOverlayButtons();
-  prefetchAllListTitles().then(updateOverlayButtons);
+  refreshOverlayButtons();
 }
 
 function hideOverlay() {
@@ -69,6 +145,7 @@ function applyFocusMode() {
     watchCurrentListTitle();
     return;
   }
+
   showOverlay();
 }
 
@@ -100,18 +177,15 @@ function boot() {
   applyFocusMode();
   watchLocationChanges();
   watchOverlayPersistence();
-  prefetchAllListTitles().then(updateOverlayButtons);
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", applyFocusMode);
   }
 }
 
-if (typeof globalThis !== "undefined") {
-  globalThis.xlfApply = applyFocusMode;
-  globalThis.xlfShow = showOverlay;
-  globalThis.xlfHide = hideOverlay;
-  globalThis.xlfIsAllowed = isAllowedXUrl;
-}
+globalThis.xlfApply = applyFocusMode;
+globalThis.xlfShow = showOverlay;
+globalThis.xlfHide = hideOverlay;
+globalThis.xlfIsAllowed = isAllowedXUrl;
 
 boot();

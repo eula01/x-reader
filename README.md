@@ -23,7 +23,7 @@ Everything else on x.com shows a full-page overlay with four buttons to your lis
 
 After pulling updates, click **Reload** on the extension in `chrome://extensions`.
 
-Button labels use each list's title from X (cached after your first visit, or fetched while logged in). You can also set a fixed `title` in `config.js` for any list.
+Edit the `title` field in `config.js` to set fixed button labels. If left blank, the extension learns each list name while you visit that list in the same browser session.
 
 ## Test
 
@@ -37,8 +37,7 @@ Open `test/harness.html` in a browser to preview allow/block behavior for a past
 
 | File | Purpose |
 |------|---------|
-| `config.js` | Allowed list IDs; optional fixed `title` per list |
-| `list-titles.js` | Fetch/cache list titles from X |
+| `config.js` | Allowed list IDs and optional `title` per list |
 | `url-matcher.js` | URL allow/block logic |
 | `page-hook.js` | Page-context SPA navigation hooks |
 | `content.js` | Overlay injection |
