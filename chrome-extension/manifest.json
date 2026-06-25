@@ -1,13 +1,19 @@
 {
   "manifest_version": 3,
   "name": "X List Focus",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Limits X to four list timelines and direct tweet links.",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
+  "web_accessible_resources": [
+    {
+      "resources": ["page-hook.js"],
+      "matches": ["https://x.com/*", "https://twitter.com/*"]
+    }
+  ],
   "content_scripts": [
     {
       "matches": ["https://x.com/*", "https://twitter.com/*"],

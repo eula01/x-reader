@@ -1,4 +1,15 @@
 const OVERLAY_ID = "x-list-focus-overlay";
+const PAGE_HOOK_ID = "x-list-focus-page-hook";
+
+function injectPageHook() {
+  if (document.getElementById(PAGE_HOOK_ID)) return;
+
+  const script = document.createElement("script");
+  script.id = PAGE_HOOK_ID;
+  script.src = chrome.runtime.getURL("page-hook.js");
+  script.onload = () => script.remove();
+  (document.documentElement || document.head).appendChild(script);
+}
 
 function ensureOverlay() {
   let overlay = document.getElementById(OVERLAY_ID);
@@ -56,29 +67,19 @@ function applyFocusMode() {
   showOverlay();
 }
 
-function hookHistory() {
-  const wrap = (method) => {
-    const original = history[method];
-    return function (...args) {
-      const result = original.apply(this, args);
-      applyFocusMode();
-      return result;
-    };
-  };
+let lastHref = location.href;
 
-  history.pushState = wrap("pushState");
-  history.replaceState = wrap("replaceState");
-  window.addEventListener("popstate", applyFocusMode);
+function onLocationChange() {
+  if (location.href === lastHref) return;
+  lastHref = location.href;
+  applyFocusMode();
 }
 
-function watchSpaNavigation() {
-  let lastHref = location.href;
-  const observer = new MutationObserver(() => {
-    if (location.href === lastHref) return;
-    lastHref = location.href;
-    applyFocusMode();
-  });
-  observer.observe(document.documentElement, { childList: true, subtree: true });
+function watchLocationChanges() {
+  window.addEventListener("xlf-location-change", onLocationChange);
+
+  // Fallback for any navigation the history hook misses.
+  setInterval(onLocationChange, 200);
 }
 
 function watchOverlayPersistence() {
@@ -92,9 +93,9 @@ function watchOverlayPersistence() {
 }
 
 function boot() {
+  injectPageHook();
   applyFocusMode();
-  hookHistory();
-  watchSpaNavigation();
+  watchLocationChanges();
   watchOverlayPersistence();
 
   if (document.readyState === "loading") {
