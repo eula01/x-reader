@@ -1,0 +1,69 @@
+html.xlf-blocked,
+html.xlf-blocked body {
+  overflow: hidden !important;
+}
+
+#x-list-focus-overlay {
+  all: initial;
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+}
+
+#x-list-focus-overlay * {
+  box-sizing: border-box;
+}
+
+#x-list-focus-overlay .xlf-panel {
+  width: min(420px, calc(100vw - 32px));
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+#x-list-focus-overlay .xlf-title {
+  margin: 0;
+  color: #0f1419;
+  font-size: 15px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+#x-list-focus-overlay .xlf-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#x-list-focus-overlay .xlf-btn {
+  display: block;
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #cfd9de;
+  border-radius: 9999px;
+  background: #ffffff;
+  color: #0f1419;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+#x-list-focus-overlay .xlf-btn:hover {
+  background: #f7f9f9;
+  border-color: #536471;
+}
+
+#x-list-focus-overlay .xlf-btn:focus-visible {
+  outline: 2px solid #1d9bf0;
+  outline-offset: 2px;
+}

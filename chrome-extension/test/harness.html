@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>X List Focus harness</title>
+    <link rel="stylesheet" href="../overlay.css" />
+    <style>
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #15202b;
+        color: #fff;
+      }
+      .harness {
+        position: relative;
+        z-index: 1;
+        padding: 24px;
+      }
+      .harness h1 {
+        margin: 0 0 8px;
+        font-size: 18px;
+      }
+      .harness p {
+        margin: 0 0 16px;
+        color: #8b98a5;
+      }
+      .harness input {
+        width: min(720px, 100%);
+        padding: 10px 12px;
+        border: 1px solid #38444d;
+        border-radius: 8px;
+        background: #192734;
+        color: #fff;
+      }
+      .harness .status {
+        margin-top: 12px;
+        font-weight: 600;
+      }
+      .fake-x {
+        margin-top: 24px;
+        padding: 48px;
+        border: 1px dashed #38444d;
+        border-radius: 12px;
+        text-align: center;
+        color: #8b98a5;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="harness">
+      <h1>X List Focus harness</h1>
+      <p>Paste an X URL to preview allow/block behavior.</p>
+      <input id="url" value="https://x.com/home" />
+      <div id="status" class="status"></div>
+      <div class="fake-x">Simulated X page content underneath</div>
+    </div>
+
+    <script src="../config.js"></script>
+    <script src="../url-matcher.js"></script>
+    <script src="../content.js"></script>
+    <script>
+      const input = document.getElementById("url");
+      const status = document.getElementById("status");
+
+      function preview(url) {
+        status.textContent = xlfIsAllowed(url)
+          ? "Allowed: overlay hidden"
+          : "Blocked: overlay shown";
+        if (xlfIsAllowed(url)) {
+          xlfHide();
+        } else {
+          xlfShow();
+        }
+      }
+
+      input.addEventListener("input", () => preview(input.value));
+      preview(input.value);
+    </script>
+  </body>
+</html>
