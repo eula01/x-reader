@@ -35,7 +35,8 @@ function ensureOverlay() {
     const link = document.createElement("a");
     link.className = "xlf-btn";
     link.href = list.url;
-    link.textContent = list.label;
+    link.dataset.listId = list.id;
+    link.textContent = list.title || `List …${list.id.slice(-4)}`;
     buttons.appendChild(link);
   }
 
@@ -52,6 +53,8 @@ function showOverlay() {
     (document.documentElement || document.body).appendChild(overlay);
   }
   document.documentElement.classList.add("xlf-blocked");
+  updateOverlayButtons();
+  prefetchAllListTitles().then(updateOverlayButtons);
 }
 
 function hideOverlay() {
@@ -62,6 +65,8 @@ function hideOverlay() {
 function applyFocusMode() {
   if (isAllowedXUrl(location.href)) {
     hideOverlay();
+    cacheTitleForCurrentListPage();
+    watchCurrentListTitle();
     return;
   }
   showOverlay();
@@ -77,8 +82,6 @@ function onLocationChange() {
 
 function watchLocationChanges() {
   window.addEventListener("xlf-location-change", onLocationChange);
-
-  // Fallback for any navigation the history hook misses.
   setInterval(onLocationChange, 200);
 }
 
@@ -97,6 +100,7 @@ function boot() {
   applyFocusMode();
   watchLocationChanges();
   watchOverlayPersistence();
+  prefetchAllListTitles().then(updateOverlayButtons);
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", applyFocusMode);

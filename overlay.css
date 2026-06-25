@@ -46,15 +46,16 @@ html.xlf-blocked body {
   width: 100%;
   padding: 14px 16px;
   border: 1px solid #cfd9de;
-  border-radius: 9999px;
+  border-radius: 16px;
   background: #ffffff;
   color: #0f1419;
   font-size: 15px;
   font-weight: 600;
-  line-height: 1.2;
+  line-height: 1.35;
   text-align: center;
   text-decoration: none;
   cursor: pointer;
+  white-space: normal;
   transition: background 120ms ease, border-color 120ms ease;
 }
 
