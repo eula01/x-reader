@@ -11,9 +11,20 @@ html.xlf-blocked body {
   display: flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  min-height: 100dvh;
+  padding: max(16px, env(safe-area-inset-top, 0px))
+    max(16px, env(safe-area-inset-right, 0px))
+    max(16px, env(safe-area-inset-bottom, 0px))
+    max(16px, env(safe-area-inset-left, 0px));
   background: #ffffff;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
     Arial, sans-serif;
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior: none;
 }
 
 #x-list-focus-overlay * {
@@ -44,6 +55,7 @@ html.xlf-blocked body {
 #x-list-focus-overlay .xlf-btn {
   display: block;
   width: 100%;
+  min-height: 44px;
   padding: 14px 16px;
   border: 1px solid #cfd9de;
   border-radius: 16px;
@@ -56,6 +68,8 @@ html.xlf-blocked body {
   text-decoration: none;
   cursor: pointer;
   white-space: normal;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
   transition: background 120ms ease, border-color 120ms ease;
 }
 
