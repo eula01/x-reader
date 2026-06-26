@@ -1,3 +1,102 @@
+// ==UserScript==
+// @name           X List Focus
+// @description    Limits X to four list timelines and direct tweet links.
+// @version        1.0.5
+// @match          https://x.com/*
+// @match          https://twitter.com/*
+// @run-at         document-start
+// @grant          none
+// ==/UserScript==
+
+globalThis.XLF_PAGE_HOOK_INLINE = "(function () {\n  if (window.__xlfPageHook) return;\n  window.__xlfPageHook = true;\n\n  function notify() {\n    window.dispatchEvent(\n      new CustomEvent(\"xlf-location-change\", { detail: location.href })\n    );\n  }\n\n  function installHistoryHook() {\n    for (const type of [\"pushState\", \"replaceState\"]) {\n      const original = History.prototype[type];\n      if (original.__xlfWrapped) continue;\n\n      const wrapped = function (...args) {\n        const result = original.apply(this, args);\n        notify();\n        return result;\n      };\n      wrapped.__xlfWrapped = true;\n      History.prototype[type] = wrapped;\n    }\n  }\n\n  installHistoryHook();\n  window.addEventListener(\"popstate\", notify);\n  window.addEventListener(\"hashchange\", notify);\n\n  // X or other libs may replace history methods after load.\n  setInterval(installHistoryHook, 1000);\n})();";
+globalThis.XLF_OVERLAY_CSS = "html.xlf-blocked,\nhtml.xlf-blocked body {\n  overflow: hidden !important;\n}\n\n#x-list-focus-overlay {\n  all: initial;\n  position: fixed;\n  inset: 0;\n  z-index: 2147483647;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  box-sizing: border-box;\n  width: 100%;\n  min-height: 100vh;\n  min-height: -webkit-fill-available;\n  min-height: 100dvh;\n  padding: max(16px, env(safe-area-inset-top, 0px))\n    max(16px, env(safe-area-inset-right, 0px))\n    max(16px, env(safe-area-inset-bottom, 0px))\n    max(16px, env(safe-area-inset-left, 0px));\n  background: #ffffff;\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica,\n    Arial, sans-serif;\n  -webkit-text-size-adjust: 100%;\n  overscroll-behavior: none;\n}\n\n#x-list-focus-overlay * {\n  box-sizing: border-box;\n}\n\n#x-list-focus-overlay .xlf-panel {\n  width: min(420px, calc(100vw - 32px));\n  display: flex;\n  flex-direction: column;\n  gap: 20px;\n}\n\n#x-list-focus-overlay .xlf-title {\n  margin: 0;\n  color: #0f1419;\n  font-size: 15px;\n  line-height: 1.5;\n  text-align: center;\n}\n\n#x-list-focus-overlay .xlf-buttons {\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n}\n\n#x-list-focus-overlay .xlf-btn {\n  display: block;\n  width: 100%;\n  min-height: 44px;\n  padding: 14px 16px;\n  border: 1px solid #cfd9de;\n  border-radius: 16px;\n  background: #ffffff;\n  color: #0f1419;\n  font-size: 15px;\n  font-weight: 600;\n  line-height: 1.35;\n  text-align: center;\n  text-decoration: none;\n  cursor: pointer;\n  white-space: normal;\n  touch-action: manipulation;\n  -webkit-tap-highlight-color: transparent;\n  transition: background 120ms ease, border-color 120ms ease;\n}\n\n#x-list-focus-overlay .xlf-btn:hover {\n  background: #f7f9f9;\n  border-color: #536471;\n}\n\n#x-list-focus-overlay .xlf-btn:focus-visible {\n  outline: 2px solid #1d9bf0;\n  outline-offset: 2px;\n}";
+
+/** @typedef {{ id: string; title: string; url: string }} AllowedList */
+
+/** @type {AllowedList[]} */
+globalThis.ALLOWED_LISTS = [
+  {
+    id: "2062211801987641463",
+    title: "",
+    url: "https://x.com/i/lists/2062211801987641463",
+  },
+  {
+    id: "2047478346116686143",
+    title: "",
+    url: "https://x.com/i/lists/2047478346116686143",
+  },
+  {
+    id: "2059974188396351918",
+    title: "",
+    url: "https://x.com/i/lists/2059974188396351918",
+  },
+  {
+    id: "2063220039365415064",
+    title: "",
+    url: "https://x.com/i/lists/2063220039365415064",
+  },
+];
+
+globalThis.ALLOWED_LIST_IDS = new Set(
+  globalThis.ALLOWED_LISTS.map((list) => list.id)
+);
+
+globalThis.X_HOSTS = new Set([
+  "x.com",
+  "www.x.com",
+  "twitter.com",
+  "www.twitter.com",
+]);
+
+/**
+ * Returns true when the URL should be shown without the focus overlay.
+ * @param {string} href
+ * @returns {boolean}
+ */
+function isAllowedXUrl(href) {
+  const X_HOSTS = globalThis.X_HOSTS;
+  const ALLOWED_LIST_IDS = globalThis.ALLOWED_LIST_IDS;
+
+  let url;
+  try {
+    url = new URL(href);
+  } catch {
+    return true;
+  }
+
+  if (!X_HOSTS.has(url.hostname)) {
+    return true;
+  }
+
+  const path = url.pathname.replace(/\/+$/, "") || "/";
+
+  const listMatch = path.match(/^\/i\/lists\/(\d+)(?:\/.*)?$/);
+  if (listMatch && ALLOWED_LIST_IDS.has(listMatch[1])) {
+    return true;
+  }
+
+  if (/^\/[^/]+\/status\/\d+/.test(path)) {
+    return true;
+  }
+
+  if (/^\/i\/status\/\d+/.test(path)) {
+    return true;
+  }
+
+  return false;
+}
+
+globalThis.isAllowedXUrl = isAllowedXUrl;
+
+if (typeof module !== "undefined") {
+  module.exports = {
+    isAllowedXUrl,
+    ALLOWED_LISTS: globalThis.ALLOWED_LISTS,
+    ALLOWED_LIST_IDS: globalThis.ALLOWED_LIST_IDS,
+    X_HOSTS: globalThis.X_HOSTS,
+  };
+}
+
 const OVERLAY_ID = "x-list-focus-overlay";
 const PAGE_HOOK_ID = "x-list-focus-page-hook";
 const STYLE_ID = "x-list-focus-styles";
@@ -234,3 +333,4 @@ globalThis.xlfHide = hideOverlay;
 globalThis.xlfIsAllowed = isAllowedXUrl;
 
 boot();
+
