@@ -25,15 +25,18 @@ After pulling updates, click **Reload** on the extension in `chrome://extensions
 
 ## Install on iPhone Safari
 
-iPhone Safari cannot load unpacked extensions the way Chrome does. Use the **Userscripts** app instead:
+iPhone Safari cannot load unpacked extensions the way Chrome does. Use the **Userscripts** app instead.
 
-1. Install [Userscripts](https://apps.apple.com/app/userscripts/id1609744600) from the App Store
-2. Open **Settings → Safari → Extensions** and enable **Userscripts**
-3. In the Userscripts app, add `userscript/x-list-focus.user.js` from this repo
-   - Easiest: host the file in iCloud Drive and open it in Userscripts, or paste the file contents into a new script
-4. Make sure the script is enabled, then open x.com in Safari
+### Easy install (recommended)
 
-After pulling updates, rebuild the userscript with `node scripts/build-userscript.mjs` (or copy the updated file from the repo) and refresh it in Userscripts.
+1. On your iPhone, open this page in **Safari**:
+   **https://htmlpreview.github.io/?https://github.com/eula01/x-reader/blob/cursor/iphone-safari-support-04ec/docs/install.html**
+2. Tap **Download x-list-focus.user.js** (do not use Share or Shortcuts)
+3. Install [Userscripts](https://apps.apple.com/app/userscripts/id1609744600) and enable it in **Settings → Safari → Extensions**
+4. Open **Files → Downloads**, move `x-list-focus.user.js` to **On My iPhone → Userscripts**
+5. Open **x.com** in Safari
+
+If Share keeps opening a broken Shortcut, remove it from the share sheet: tap **Share → Edit Actions** and disable any **Save File** shortcut.
 
 ## Install on Mac Safari
 

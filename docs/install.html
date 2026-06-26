@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Install X List Focus on iPhone</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+      body {
+        margin: 0;
+        padding: 24px 20px 40px;
+        line-height: 1.5;
+        max-width: 520px;
+      }
+      h1 {
+        font-size: 22px;
+        margin: 0 0 8px;
+      }
+      p {
+        margin: 0 0 16px;
+        color: #536471;
+      }
+      ol {
+        margin: 0 0 20px;
+        padding-left: 20px;
+      }
+      li {
+        margin-bottom: 10px;
+      }
+      button {
+        display: block;
+        width: 100%;
+        min-height: 48px;
+        margin-bottom: 12px;
+        border: 0;
+        border-radius: 14px;
+        background: #1d9bf0;
+        color: #fff;
+        font-size: 17px;
+        font-weight: 700;
+      }
+      .status {
+        min-height: 1.25em;
+        font-weight: 600;
+      }
+      .note {
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Install on iPhone Safari</h1>
+    <p>Do not use Share or Shortcuts. Tap download below.</p>
+
+    <button id="download" type="button">Download x-list-focus.user.js</button>
+    <p id="status" class="status" aria-live="polite"></p>
+
+    <ol>
+      <li>Install the <strong>Userscripts</strong> app from the App Store.</li>
+      <li>Enable it in <strong>Settings → Safari → Extensions</strong>.</li>
+      <li>Tap the blue download button above. Safari saves the file to <strong>Files → Downloads</strong>.</li>
+      <li>Open <strong>Files</strong>, long-press <strong>x-list-focus.user.js</strong>, tap <strong>Move</strong>, and put it in <strong>On My iPhone → Userscripts</strong>.</li>
+      <li>Open <strong>x.com</strong> in Safari.</li>
+    </ol>
+
+    <p class="note">If download does not start, long-press the button and choose <strong>Download Linked File</strong>.</p>
+
+    <script id="xlf-userscript" type="application/json">"// ==UserScript==\n// @name           X List Focus\n// @description    Limits X to four list timelines and direct tweet links.\n// @version        1.0.5\n// @match          https://x.com/*\n// @match          https://twitter.com/*\n// @run-at         document-start\n// @grant          none\n// ==/UserScript==\n\nglobalThis.XLF_PAGE_HOOK_INLINE = \"(function () {\\n  if (window.__xlfPageHook) return;\\n  window.__xlfPageHook = true;\\n\\n  function notify() {\\n    window.dispatchEvent(\\n      new CustomEvent(\\\"xlf-location-change\\\", { detail: location.href })\\n    );\\n  }\\n\\n  function installHistoryHook() {\\n    for (const type of [\\\"pushState\\\", \\\"replaceState\\\"]) {\\n      const original = History.prototype[type];\\n      if (original.__xlfWrapped) continue;\\n\\n      const wrapped = function (...args) {\\n        const result = original.apply(this, args);\\n        notify();\\n        return result;\\n      };\\n      wrapped.__xlfWrapped = true;\\n      History.prototype[type] = wrapped;\\n    }\\n  }\\n\\n  installHistoryHook();\\n  window.addEventListener(\\\"popstate\\\", notify);\\n  window.addEventListener(\\\"hashchange\\\", notify);\\n\\n  // X or other libs may replace history methods after load.\\n  setInterval(installHistoryHook, 1000);\\n})();\";\nglobalThis.XLF_OVERLAY_CSS = \"html.xlf-blocked,\\nhtml.xlf-blocked body {\\n  overflow: hidden !important;\\n}\\n\\n#x-list-focus-overlay {\\n  all: initial;\\n  position: fixed;\\n  inset: 0;\\n  z-index: 2147483647;\\n  display: flex;\\n  align-items: center;\\n  justify-content: center;\\n  box-sizing: border-box;\\n  width: 100%;\\n  min-height: 100vh;\\n  min-height: -webkit-fill-available;\\n  min-height: 100dvh;\\n  padding: max(16px, env(safe-area-inset-top, 0px))\\n    max(16px, env(safe-area-inset-right, 0px))\\n    max(16px, env(safe-area-inset-bottom, 0px))\\n    max(16px, env(safe-area-inset-left, 0px));\\n  background: #ffffff;\\n  font-family: -apple-system, BlinkMacSystemFont, \\\"Segoe UI\\\", Roboto, Helvetica,\\n    Arial, sans-serif;\\n  -webkit-text-size-adjust: 100%;\\n  overscroll-behavior: none;\\n}\\n\\n#x-list-focus-overlay * {\\n  box-sizing: border-box;\\n}\\n\\n#x-list-focus-overlay .xlf-panel {\\n  width: min(420px, calc(100vw - 32px));\\n  display: flex;\\n  flex-direction: column;\\n  gap: 20px;\\n}\\n\\n#x-list-focus-overlay .xlf-title {\\n  margin: 0;\\n  color: #0f1419;\\n  font-size: 15px;\\n  line-height: 1.5;\\n  text-align: center;\\n}\\n\\n#x-list-focus-overlay .xlf-buttons {\\n  display: flex;\\n  flex-direction: column;\\n  gap: 10px;\\n}\\n\\n#x-list-focus-overlay .xlf-btn {\\n  display: block;\\n  width: 100%;\\n  min-height: 44px;\\n  padding: 14px 16px;\\n  border: 1px solid #cfd9de;\\n  border-radius: 16px;\\n  background: #ffffff;\\n  color: #0f1419;\\n  font-size: 15px;\\n  font-weight: 600;\\n  line-height: 1.35;\\n  text-align: center;\\n  text-decoration: none;\\n  cursor: pointer;\\n  white-space: normal;\\n  touch-action: manipulation;\\n  -webkit-tap-highlight-color: transparent;\\n  transition: background 120ms ease, border-color 120ms ease;\\n}\\n\\n#x-list-focus-overlay .xlf-btn:hover {\\n  background: #f7f9f9;\\n  border-color: #536471;\\n}\\n\\n#x-list-focus-overlay .xlf-btn:focus-visible {\\n  outline: 2px solid #1d9bf0;\\n  outline-offset: 2px;\\n}\";\n\n/** @typedef {{ id: string; title: string; url: string }} AllowedList */\n\n/** @type {AllowedList[]} */\nglobalThis.ALLOWED_LISTS = [\n  {\n    id: \"2062211801987641463\",\n    title: \"\",\n    url: \"https://x.com/i/lists/2062211801987641463\",\n  },\n  {\n    id: \"2047478346116686143\",\n    title: \"\",\n    url: \"https://x.com/i/lists/2047478346116686143\",\n  },\n  {\n    id: \"2059974188396351918\",\n    title: \"\",\n    url: \"https://x.com/i/lists/2059974188396351918\",\n  },\n  {\n    id: \"2063220039365415064\",\n    title: \"\",\n    url: \"https://x.com/i/lists/2063220039365415064\",\n  },\n];\n\nglobalThis.ALLOWED_LIST_IDS = new Set(\n  globalThis.ALLOWED_LISTS.map((list) => list.id)\n);\n\nglobalThis.X_HOSTS = new Set([\n  \"x.com\",\n  \"www.x.com\",\n  \"twitter.com\",\n  \"www.twitter.com\",\n]);\n\n/**\n * Returns true when the URL should be shown without the focus overlay.\n * @param {string} href\n * @returns {boolean}\n */\nfunction isAllowedXUrl(href) {\n  const X_HOSTS = globalThis.X_HOSTS;\n  const ALLOWED_LIST_IDS = globalThis.ALLOWED_LIST_IDS;\n\n  let url;\n  try {\n    url = new URL(href);\n  } catch {\n    return true;\n  }\n\n  if (!X_HOSTS.has(url.hostname)) {\n    return true;\n  }\n\n  const path = url.pathname.replace(/\\/+$/, \"\") || \"/\";\n\n  const listMatch = path.match(/^\\/i\\/lists\\/(\\d+)(?:\\/.*)?$/);\n  if (listMatch && ALLOWED_LIST_IDS.has(listMatch[1])) {\n    return true;\n  }\n\n  if (/^\\/[^/]+\\/status\\/\\d+/.test(path)) {\n    return true;\n  }\n\n  if (/^\\/i\\/status\\/\\d+/.test(path)) {\n    return true;\n  }\n\n  return false;\n}\n\nglobalThis.isAllowedXUrl = isAllowedXUrl;\n\nif (typeof module !== \"undefined\") {\n  module.exports = {\n    isAllowedXUrl,\n    ALLOWED_LISTS: globalThis.ALLOWED_LISTS,\n    ALLOWED_LIST_IDS: globalThis.ALLOWED_LIST_IDS,\n    X_HOSTS: globalThis.X_HOSTS,\n  };\n}\n\nconst OVERLAY_ID = \"x-list-focus-overlay\";\nconst PAGE_HOOK_ID = \"x-list-focus-page-hook\";\nconst STYLE_ID = \"x-list-focus-styles\";\nconst ALLOWED_LISTS = globalThis.ALLOWED_LISTS;\nconst sessionTitles = Object.create(null);\nlet titleWatchTimer = null;\n\nfunction getPageHookSource() {\n  return globalThis.XLF_PAGE_HOOK_INLINE ?? null;\n}\n\nfunction appendPageHookScript(source) {\n  const script = document.createElement(\"script\");\n  script.id = PAGE_HOOK_ID;\n  script.textContent = source;\n  (document.documentElement || document.head).appendChild(script);\n  script.remove();\n}\n\nasync function injectPageHook() {\n  if (document.getElementById(PAGE_HOOK_ID)) return;\n\n  const inlineSource = getPageHookSource();\n  if (inlineSource) {\n    appendPageHookScript(inlineSource);\n    return;\n  }\n\n  const hookUrl = globalThis.xlfRuntime?.getURL(\"page-hook.js\");\n  if (!hookUrl) return;\n\n  try {\n    const response = await fetch(hookUrl);\n    if (response.ok) {\n      appendPageHookScript(await response.text());\n      return;\n    }\n  } catch {\n    // Safari iOS can block extension:// script src in page context; inline works.\n  }\n\n  const script = document.createElement(\"script\");\n  script.id = PAGE_HOOK_ID;\n  script.src = hookUrl;\n  script.onload = () => script.remove();\n  (document.documentElement || document.head).appendChild(script);\n}\n\nfunction injectStyles() {\n  if (document.getElementById(STYLE_ID)) return;\n\n  const css = globalThis.XLF_OVERLAY_CSS;\n  if (!css) return;\n\n  const style = document.createElement(\"style\");\n  style.id = STYLE_ID;\n  style.textContent = css;\n  (document.documentElement || document.head).appendChild(style);\n}\n\nfunction parseListTitleFromDocument() {\n  const heading =\n    document.querySelector('[data-testid=\"primaryColumn\"] h2[role=\"heading\"]') ||\n    document.querySelector('[data-testid=\"primaryColumn\"] h2');\n  if (heading?.textContent?.trim()) {\n    return heading.textContent.trim();\n  }\n\n  const titleMatch = document.title.match(\n    /(?:\\([^)]+\\)\\s*)?(?:@[^/]+\\/)?(.+?)\\s+\\/\\s+X/i\n  );\n  return titleMatch?.[1]?.trim() || null;\n}\n\nfunction getCurrentListId() {\n  const match = location.pathname.match(/^\\/i\\/lists\\/(\\d+)/);\n  return match?.[1] ?? null;\n}\n\nfunction getListButtonLabel(list) {\n  if (list.title) return list.title;\n  if (sessionTitles[list.id]) return sessionTitles[list.id];\n  return `List …${list.id.slice(-4)}`;\n}\n\nfunction refreshOverlayButtons() {\n  const overlay = document.getElementById(OVERLAY_ID);\n  if (!overlay) return;\n\n  for (const link of overlay.querySelectorAll(\".xlf-btn\")) {\n    const list = ALLOWED_LISTS.find((item) => item.id === link.dataset.listId);\n    if (list) link.textContent = getListButtonLabel(list);\n  }\n}\n\nfunction cacheTitleForCurrentListPage() {\n  const listId = getCurrentListId();\n  if (!listId || !globalThis.ALLOWED_LIST_IDS.has(listId)) return;\n\n  const list = ALLOWED_LISTS.find((item) => item.id === listId);\n  if (list?.title) return;\n\n  const scraped = parseListTitleFromDocument();\n  if (!scraped || sessionTitles[listId] === scraped) return;\n\n  sessionTitles[listId] = scraped;\n  refreshOverlayButtons();\n}\n\nfunction watchCurrentListTitle() {\n  if (titleWatchTimer) {\n    clearInterval(titleWatchTimer);\n    titleWatchTimer = null;\n  }\n\n  if (!isAllowedXUrl(location.href) || !getCurrentListId()) return;\n\n  let attempts = 0;\n  titleWatchTimer = setInterval(() => {\n    if (!isAllowedXUrl(location.href) || !getCurrentListId()) {\n      clearInterval(titleWatchTimer);\n      titleWatchTimer = null;\n      return;\n    }\n\n    cacheTitleForCurrentListPage();\n    attempts += 1;\n    if (attempts >= 20) {\n      clearInterval(titleWatchTimer);\n      titleWatchTimer = null;\n    }\n  }, 500);\n}\n\nfunction ensureOverlay() {\n  let overlay = document.getElementById(OVERLAY_ID);\n  if (overlay) return overlay;\n\n  overlay = document.createElement(\"div\");\n  overlay.id = OVERLAY_ID;\n  overlay.setAttribute(\"role\", \"dialog\");\n  overlay.setAttribute(\"aria-modal\", \"true\");\n  overlay.setAttribute(\"aria-label\", \"X access limited to your lists\");\n\n  const panel = document.createElement(\"div\");\n  panel.className = \"xlf-panel\";\n\n  const title = document.createElement(\"p\");\n  title.className = \"xlf-title\";\n  title.textContent = \"Only your lists and direct tweet links are allowed.\";\n\n  const buttons = document.createElement(\"div\");\n  buttons.className = \"xlf-buttons\";\n\n  for (const list of ALLOWED_LISTS) {\n    const link = document.createElement(\"a\");\n    link.className = \"xlf-btn\";\n    link.href = list.url;\n    link.dataset.listId = list.id;\n    link.textContent = getListButtonLabel(list);\n    buttons.appendChild(link);\n  }\n\n  panel.appendChild(title);\n  panel.appendChild(buttons);\n  overlay.appendChild(panel);\n\n  return overlay;\n}\n\nfunction showOverlay() {\n  const overlay = ensureOverlay();\n  if (!overlay.isConnected) {\n    (document.documentElement || document.body).appendChild(overlay);\n  }\n  document.documentElement.classList.add(\"xlf-blocked\");\n  refreshOverlayButtons();\n}\n\nfunction hideOverlay() {\n  document.getElementById(OVERLAY_ID)?.remove();\n  document.documentElement.classList.remove(\"xlf-blocked\");\n}\n\nfunction applyFocusMode() {\n  if (isAllowedXUrl(location.href)) {\n    hideOverlay();\n    cacheTitleForCurrentListPage();\n    watchCurrentListTitle();\n    return;\n  }\n\n  showOverlay();\n}\n\nlet lastHref = location.href;\n\nfunction onLocationChange() {\n  if (location.href === lastHref) return;\n  lastHref = location.href;\n  applyFocusMode();\n}\n\nfunction watchLocationChanges() {\n  window.addEventListener(\"xlf-location-change\", onLocationChange);\n  setInterval(onLocationChange, 200);\n}\n\nfunction watchOverlayPersistence() {\n  const observer = new MutationObserver(() => {\n    if (isAllowedXUrl(location.href)) return;\n    if (!document.getElementById(OVERLAY_ID)) {\n      showOverlay();\n    }\n  });\n  observer.observe(document.documentElement, { childList: true, subtree: true });\n}\n\nfunction boot() {\n  injectStyles();\n  injectPageHook();\n  applyFocusMode();\n  watchLocationChanges();\n  watchOverlayPersistence();\n\n  if (document.readyState === \"loading\") {\n    document.addEventListener(\"DOMContentLoaded\", applyFocusMode);\n  }\n}\n\nglobalThis.xlfApply = applyFocusMode;\nglobalThis.xlfShow = showOverlay;\nglobalThis.xlfHide = hideOverlay;\nglobalThis.xlfIsAllowed = isAllowedXUrl;\n\nboot();\n\n"</script>
+    <script>
+      const status = document.getElementById("status");
+      const source = document.getElementById("xlf-userscript").textContent;
+
+      document.getElementById("download").addEventListener("click", () => {
+        const blob = new Blob([source], { type: "application/javascript" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "x-list-focus.user.js";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+        status.textContent = "Download started. Check Files → Downloads.";
+      });
+    </script>
+  </body>
+</html>
