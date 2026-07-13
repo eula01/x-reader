@@ -50,7 +50,7 @@ const installHtml = `<!doctype html>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>Download X List Focus</title>
+    <title>Install X List Focus on iPhone</title>
     <style>
       :root {
         color-scheme: light;
@@ -107,12 +107,6 @@ const installHtml = `<!doctype html>
         background: #e7e9ea;
         color: #0f1419 !important;
       }
-      .status {
-        min-height: 1.25em;
-        margin: 0 0 16px;
-        font-weight: 600;
-        color: #0f1419;
-      }
       .warn {
         padding: 12px 14px;
         margin: 0 0 20px;
@@ -123,38 +117,46 @@ const installHtml = `<!doctype html>
       }
       .note {
         font-size: 14px;
+        color: #536471;
+      }
+      code {
+        word-break: break-all;
+        font-size: 0.92em;
       }
     </style>
   </head>
   <body>
-    <h1>Download X List Focus</h1>
-    <p class="warn">Do <strong>not</strong> use Share or Shortcuts. They fail on this file. Use the blue Download button only.</p>
+    <h1>Install X List Focus on iPhone</h1>
+    <p class="warn">Putting the file in a folder alone does nothing. You must enable the Safari extension, allow it on websites, and open the Userscripts popup once so it loads the script.</p>
 
+    <h2>Recommended: install via popup</h2>
+    <ol>
+      <li>Install <a href="https://apps.apple.com/app/userscripts/id1463298887">Userscripts</a> (Justin Wasack).</li>
+      <li>Open the Userscripts app once.</li>
+      <li>Go to <strong>Settings → Safari → Extensions → Userscripts</strong>: turn it <strong>On</strong>, and allow <strong>All Websites</strong>.</li>
+      <li>Tap the blue button below to open the <code>.user.js</code> file in Safari.</li>
+      <li>Tap <strong>aA</strong> → <strong>Userscripts</strong> → tap <strong>Install</strong>.</li>
+      <li>Open <a href="https://x.com/home">x.com/home</a> and reload. You should see the white overlay.</li>
+    </ol>
+
+    <a class="btn" href="${RAW_USERSCRIPT_URL}">Open .user.js (then aA → Install)</a>
+
+    <h2>Or download the file</h2>
     <a
-      class="btn"
+      class="btn secondary"
       id="download"
       href="${octetDataUri}"
       download="x-list-focus.user.js"
     >Download x-list-focus.user.js</a>
-
-    <a
-      class="btn secondary"
-      href="${GITHUB_DOWNLOAD_URL}"
-      download="x-list-focus.user.js"
-    >Backup download link</a>
-
     <p id="status" class="status" aria-live="polite"></p>
-
-    <h2>After it downloads</h2>
     <ol>
-      <li>Install <strong>Userscripts</strong> from the App Store if you have not already.</li>
-      <li>Open <strong>Files → Downloads</strong>.</li>
-      <li>Long-press <strong>x-list-focus.user.js</strong> → <strong>Move</strong> → <strong>On My iPhone → Userscripts</strong>.</li>
-      <li>Enable Userscripts in <strong>Settings → Apps → Safari → Extensions</strong>.</li>
-      <li>Open <strong>x.com</strong>, tap <strong>aA → Manage Extensions</strong>, enable Userscripts, reload.</li>
+      <li>Move the file into the <strong>exact</strong> scripts folder shown in the Userscripts app (filename must end in <code>.user.js</code>).</li>
+      <li>In Safari, tap <strong>aA → Userscripts</strong> once to refresh the script list.</li>
+      <li>Confirm <strong>X List Focus</strong> is listed and enabled.</li>
+      <li>Open x.com/home and reload.</li>
     </ol>
 
-    <p class="note">If tapping Download only shows code: <strong>press and hold</strong> the blue button, then choose <strong>Download Linked File</strong>.</p>
+    <p class="note">If Download only shows code: press and hold the download button → <strong>Download Linked File</strong>. Do not use Share/Shortcuts.</p>
 
     <script id="xlf-source" type="text/plain">${userscript.replace(/<\/script/gi, "<\\/script")}</script>
     <script>
@@ -163,7 +165,6 @@ const installHtml = `<!doctype html>
       const filename = "x-list-focus.user.js";
 
       function triggerDownload(event) {
-        // Prefer a real file download over Share / Shortcuts.
         try {
           const blob = new Blob([source], { type: "application/octet-stream" });
           const url = URL.createObjectURL(blob);
@@ -175,10 +176,10 @@ const installHtml = `<!doctype html>
           link.click();
           link.remove();
           setTimeout(() => URL.revokeObjectURL(url), 2000);
-          status.textContent = "Download started. Check Files → Downloads.";
+          status.textContent = "Download started. Check Files → Downloads, then open aA → Userscripts once.";
           if (event) event.preventDefault();
         } catch (err) {
-          status.textContent = "Tap-and-hold the blue button → Download Linked File.";
+          status.textContent = "Press and hold Download → Download Linked File.";
         }
       }
 

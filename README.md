@@ -13,33 +13,57 @@ Chrome and Safari extension that limits X to four list timelines and direct twee
 
 Everything else on x.com shows a full-page overlay with four buttons to your lists.
 
-## Install on iPhone Safari
+## Install on iPhone Safari (current steps)
 
-iPhone Safari cannot load unpacked Chrome extensions. Use the free **Userscripts** app.
+iPhone Safari cannot load Chrome extensions. Use the free **Userscripts** app by Justin Wasack (App Store id `1463298887`, requires iOS 15.1+).
 
-### 1. Install Userscripts
+### 1. Install and enable Userscripts
 
-1. Install [Userscripts](https://apps.apple.com/app/userscripts/id1609744600) from the App Store
-2. Open the Userscripts app once and set its folder to **On My iPhone → Userscripts**
-3. Enable it in **Settings → Apps → Safari → Extensions → Userscripts** (allow for all websites, or at least x.com)
+1. Install: https://apps.apple.com/app/userscripts/id1463298887
+2. Open the **Userscripts** app once (it sets a default scripts folder automatically on recent versions)
+3. Open **Settings → Safari → Extensions → Userscripts**
+4. Turn **Userscripts** **ON**
+5. Under **Allow Userscripts On…**, choose **All Websites** → **Allow**  
+   (or at least allow **x.com**)
 
-### 2. Download the script (no Share / Shortcuts)
+### 2. Install the script (recommended)
 
-On your iPhone in **Safari**, open the download page:
+1. In **Safari**, open this URL (must end in `.user.js`):  
+   https://raw.githubusercontent.com/eula01/x-reader/cursor/iphone-safari-mobile-f9b2/userscript/x-list-focus.user.js
+2. Tap **aA** (left of the address bar) → **Userscripts**
+3. You should see an **Install** prompt — tap it and confirm
+4. Stay in that popup and confirm **X List Focus** is listed and toggled **on**
+5. Go to https://x.com/home and reload
 
+You should see a white overlay with four list buttons.
+
+### 3. If you already downloaded the file manually
+
+Just putting a file in a folder is not enough. Do all of this:
+
+1. Open the **Userscripts** app and note/check the scripts directory it is using
+2. Put `x-list-focus.user.js` in **that exact directory** (filename must end in `.user.js`, not `.txt`)
+3. In Safari on **any** page, tap **aA → Userscripts** once  
+   (the extension only reloads new/changed files after you open the popup)
+4. Confirm **X List Focus** appears in the popup list and is enabled
+5. Open https://x.com/home, tap **aA → Userscripts** again, and check that the script is matched for this page
+6. Reload
+
+### Troubleshooting (“nothing happened”)
+
+| Check | What to do |
+| --- | --- |
+| Wrong app | Must be **Userscripts** by Justin Wasack (`id1463298887`), not another userscript manager |
+| Extension off | Settings → Safari → Extensions → Userscripts → On |
+| No website permission | Allow **All Websites** (or allow x.com) |
+| Script not loaded | Open **aA → Userscripts** once after adding/moving the file |
+| Wrong folder | File must be in the directory shown in the Userscripts app |
+| Wrong filename | Must be `something.user.js` |
+| Injection off | In the Userscripts popup, ensure **Enable Injection** is on |
+| Still nothing | On x.com, open the popup and confirm **X List Focus** is listed as matched |
+
+Download helper page (optional):  
 https://htmlpreview.github.io/?https://github.com/eula01/x-reader/blob/cursor/iphone-safari-mobile-f9b2/docs/install.html
-
-1. Tap the blue **Download x-list-focus.user.js** button  
-   (if Safari only shows code, **press and hold** the button → **Download Linked File**)
-2. Open **Files → Downloads**
-3. Long-press the file → **Move** → **On My iPhone → Userscripts**
-4. Open **x.com** in Safari
-5. Tap **aA → Manage Extensions** → enable **Userscripts** → reload
-
-Do **not** use Share or Shortcuts — they fail with conversion errors on this file.
-
-Backup file link (then press-and-hold → Download Linked File):  
-https://github.com/eula01/x-reader/raw/cursor/iphone-safari-mobile-f9b2/userscript/x-list-focus.user.js
 
 ## Install on Chrome (desktop)
 
@@ -71,7 +95,7 @@ On iPhone, set titles in `config.js`, then rebuild the userscript:
 node scripts/build-userscript.mjs
 ```
 
-Copy the updated `userscript/x-list-focus.user.js` into the Userscripts folder on your iPhone (replace the old file).
+Reinstall / replace `userscript/x-list-focus.user.js` in your Userscripts folder, then open the Userscripts popup once to refresh.
 
 ## Test
 
