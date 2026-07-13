@@ -13,57 +13,34 @@ Chrome and Safari extension that limits X to four list timelines and direct twee
 
 Everything else on x.com shows a full-page overlay with four buttons to your lists.
 
-## Install on iPhone Safari (current steps)
+## Install on iPhone (recommended: Orion)
 
-iPhone Safari cannot load Chrome extensions. Use the free **Userscripts** app by Justin Wasack (App Store id `1463298887`, requires iOS 15.1+).
+Safari’s Userscripts extension often fails to open its popup. The reliable path is **Orion Browser**, which can run this Chrome extension directly.
 
-### 1. Install and enable Userscripts
+1. Install **[Orion Browser by Kagi](https://apps.apple.com/app/orion-browser-by-kagi/id1484498200)** (free)
+2. In Orion: **••• → Settings** → enable **Chrome Extensions**
+3. Download the extension zip:  
+   https://github.com/eula01/x-reader/raw/cursor/iphone-safari-mobile-f9b2/dist/x-list-focus-extension.zip
+4. In Orion: **••• → Extensions → +** → install from file → choose `x-list-focus-extension.zip`
+5. Open **https://x.com/home inside Orion** and reload
 
-1. Install: https://apps.apple.com/app/userscripts/id1463298887
-2. Open the **Userscripts** app once (it sets a default scripts folder automatically on recent versions)
-3. Open **Settings → Safari → Extensions → Userscripts**
-4. Turn **Userscripts** **ON**
-5. Under **Allow Userscripts On…**, choose **All Websites** → **Allow**  
-   (or at least allow **x.com**)
+You should see the white focus overlay with four list buttons.
 
-### 2. Install the script (recommended)
-
-1. In **Safari**, open this URL (must end in `.user.js`):  
-   https://raw.githubusercontent.com/eula01/x-reader/cursor/iphone-safari-mobile-f9b2/userscript/x-list-focus.user.js
-2. Tap **aA** (left of the address bar) → **Userscripts**
-3. You should see an **Install** prompt — tap it and confirm
-4. Stay in that popup and confirm **X List Focus** is listed and toggled **on**
-5. Go to https://x.com/home and reload
-
-You should see a white overlay with four list buttons.
-
-### 3. If you already downloaded the file manually
-
-Just putting a file in a folder is not enough. Do all of this:
-
-1. Open the **Userscripts** app and note/check the scripts directory it is using
-2. Put `x-list-focus.user.js` in **that exact directory** (filename must end in `.user.js`, not `.txt`)
-3. In Safari on **any** page, tap **aA → Userscripts** once  
-   (the extension only reloads new/changed files after you open the popup)
-4. Confirm **X List Focus** appears in the popup list and is enabled
-5. Open https://x.com/home, tap **aA → Userscripts** again, and check that the script is matched for this page
-6. Reload
-
-### Troubleshooting (“nothing happened”)
-
-| Check | What to do |
-| --- | --- |
-| Wrong app | Must be **Userscripts** by Justin Wasack (`id1463298887`), not another userscript manager |
-| Extension off | Settings → Safari → Extensions → Userscripts → On |
-| No website permission | Allow **All Websites** (or allow x.com) |
-| Script not loaded | Open **aA → Userscripts** once after adding/moving the file |
-| Wrong folder | File must be in the directory shown in the Userscripts app |
-| Wrong filename | Must be `something.user.js` |
-| Injection off | In the Userscripts popup, ensure **Enable Injection** is on |
-| Still nothing | On x.com, open the popup and confirm **X List Focus** is listed as matched |
-
-Download helper page (optional):  
+Guided page:  
 https://htmlpreview.github.io/?https://github.com/eula01/x-reader/blob/cursor/iphone-safari-mobile-f9b2/docs/install.html
+
+### Optional: Safari + Userscripts
+
+Only use this if **aA → Userscripts** actually opens a popup on your phone.
+
+1. Install [Userscripts](https://apps.apple.com/app/userscripts/id1463298887)
+2. **Settings → Safari → Extensions → Userscripts** → On, allow **All Websites**
+3. Open  
+   https://raw.githubusercontent.com/eula01/x-reader/cursor/iphone-safari-mobile-f9b2/userscript/x-list-focus.user.js
+4. Tap **aA → Userscripts → Install**
+5. Open https://x.com/home and reload
+
+If **aA → Userscripts** does nothing, switch to Orion instead.
 
 ## Install on Chrome (desktop)
 
@@ -89,13 +66,11 @@ After pulling updates, click **Reload** on the extension in `chrome://extensions
 
 Edit the `title` field in `config.js` to set fixed button labels. If left blank, the extension learns each list name while you visit that list in the same browser session.
 
-On iPhone, set titles in `config.js`, then rebuild the userscript:
+Rebuild packaged iPhone files after edits:
 
 ```bash
 node scripts/build-userscript.mjs
 ```
-
-Reinstall / replace `userscript/x-list-focus.user.js` in your Userscripts folder, then open the Userscripts popup once to refresh.
 
 ## Test
 
@@ -116,6 +91,7 @@ Open `test/harness.html` in a browser to preview allow/block behavior for a past
 | `page-hook.js` | Page-context SPA navigation hooks |
 | `content.js` | Overlay injection |
 | `overlay.css` | Full-page blocker UI |
-| `userscript/x-list-focus.user.js` | iPhone Safari userscript (built file) |
-| `docs/install.html` | Mobile-friendly install helper page |
-| `scripts/build-userscript.mjs` | Rebuilds the userscript + install page |
+| `dist/x-list-focus-extension.zip` | Chrome extension package for Orion on iPhone |
+| `userscript/x-list-focus.user.js` | Optional Safari userscript |
+| `docs/install.html` | Mobile install helper |
+| `scripts/build-userscript.mjs` | Rebuilds userscript, install page, and zip |

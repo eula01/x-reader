@@ -1,11 +1,14 @@
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync, copyFileSync, rmSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { execFileSync } from "node:child_process";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const BRANCH = "cursor/iphone-safari-mobile-f9b2";
 const RAW_USERSCRIPT_URL = `https://raw.githubusercontent.com/eula01/x-reader/${BRANCH}/userscript/x-list-focus.user.js`;
-const GITHUB_DOWNLOAD_URL = `https://github.com/eula01/x-reader/raw/${BRANCH}/userscript/x-list-focus.user.js`;
+const EXTENSION_ZIP_URL = `https://github.com/eula01/x-reader/raw/${BRANCH}/dist/x-list-focus-extension.zip`;
+const ORION_APP_URL = "https://apps.apple.com/app/orion-browser-by-kagi/id1484498200";
+const USERSCRIPTS_APP_URL = "https://apps.apple.com/app/userscripts/id1463298887";
 
 function read(path) {
   return readFileSync(join(root, path), "utf8");
@@ -37,12 +40,39 @@ ${read("url-matcher.js")}
 ${read("content.js")}
 `;
 
-const outputPath = join(root, "userscript", "x-list-focus.user.js");
-mkdirSync(join(root, "userscript"), { recursive: true });
-writeFileSync(outputPath, userscript);
-console.log(`Wrote ${outputPath}`);
+const userscriptDir = join(root, "userscript");
+mkdirSync(userscriptDir, { recursive: true });
+writeFileSync(join(userscriptDir, "x-list-focus.user.js"), userscript);
+console.log("Wrote userscript/x-list-focus.user.js");
 
-// application/octet-stream makes Safari treat this as a file download, not a webpage.
+// Chrome/Orion extension zip (manifest + runtime files only).
+const distDir = join(root, "dist");
+const stagingDir = join(distDir, "staging");
+rmSync(stagingDir, { recursive: true, force: true });
+mkdirSync(join(stagingDir, "icons"), { recursive: true });
+
+const extensionFiles = [
+  "manifest.json",
+  "config.js",
+  "url-matcher.js",
+  "runtime.js",
+  "content.js",
+  "page-hook.js",
+  "overlay.css",
+];
+for (const file of extensionFiles) {
+  copyFileSync(join(root, file), join(stagingDir, file));
+}
+for (const icon of ["icon16.png", "icon48.png", "icon128.png"]) {
+  copyFileSync(join(root, "icons", icon), join(stagingDir, "icons", icon));
+}
+
+const zipPath = join(distDir, "x-list-focus-extension.zip");
+rmSync(zipPath, { force: true });
+execFileSync("zip", ["-r", zipPath, "."], { cwd: stagingDir });
+rmSync(stagingDir, { recursive: true, force: true });
+console.log("Wrote dist/x-list-focus-extension.zip");
+
 const octetDataUri = `data:application/octet-stream;charset=utf-8,${encodeURIComponent(userscript)}`;
 
 const installHtml = `<!doctype html>
@@ -101,7 +131,6 @@ const installHtml = `<!doctype html>
         text-decoration: none;
         line-height: 1.3;
         -webkit-tap-highlight-color: transparent;
-        cursor: pointer;
       }
       .btn.secondary {
         background: #e7e9ea;
@@ -126,70 +155,58 @@ const installHtml = `<!doctype html>
     </style>
   </head>
   <body>
-    <h1>Install X List Focus on iPhone</h1>
-    <p class="warn">Putting the file in a folder alone does nothing. You must enable the Safari extension, allow it on websites, and open the Userscripts popup once so it loads the script.</p>
+    <h1>Install on iPhone</h1>
+    <p class="warn">If Safari’s <strong>aA → Userscripts</strong> does nothing, skip Userscripts. Use <strong>Orion Browser</strong> below instead.</p>
 
-    <h2>Recommended: install via popup</h2>
+    <h2>Recommended: Orion Browser</h2>
+    <p>Orion can run this as a normal Chrome extension on iPhone (no Userscripts popup needed).</p>
     <ol>
-      <li>Install <a href="https://apps.apple.com/app/userscripts/id1463298887">Userscripts</a> (Justin Wasack).</li>
-      <li>Open the Userscripts app once.</li>
-      <li>Go to <strong>Settings → Safari → Extensions → Userscripts</strong>: turn it <strong>On</strong>, and allow <strong>All Websites</strong>.</li>
-      <li>Tap the blue button below to open the <code>.user.js</code> file in Safari.</li>
-      <li>Tap <strong>aA</strong> → <strong>Userscripts</strong> → tap <strong>Install</strong>.</li>
-      <li>Open <a href="https://x.com/home">x.com/home</a> and reload. You should see the white overlay.</li>
+      <li>Install <a href="${ORION_APP_URL}">Orion Browser by Kagi</a> (free).</li>
+      <li>In Orion: <strong>••• → Settings</strong> → enable <strong>Chrome Extensions</strong>.</li>
+      <li>Tap the blue button below to download the extension zip.</li>
+      <li>In Orion: <strong>••• → Extensions → +</strong> → install from file → choose <code>x-list-focus-extension.zip</code>.</li>
+      <li>Open <a href="https://x.com/home">x.com/home</a> <strong>inside Orion</strong> and reload.</li>
     </ol>
 
-    <a class="btn" href="${RAW_USERSCRIPT_URL}">Open .user.js (then aA → Install)</a>
+    <a class="btn" href="${EXTENSION_ZIP_URL}">Download Chrome extension (.zip)</a>
 
-    <h2>Or download the file</h2>
-    <a
-      class="btn secondary"
-      id="download"
-      href="${octetDataUri}"
-      download="x-list-focus.user.js"
-    >Download x-list-focus.user.js</a>
-    <p id="status" class="status" aria-live="polite"></p>
+    <h2>Optional: Safari + Userscripts</h2>
+    <p>Only if <strong>aA → Userscripts</strong> actually opens a popup for you.</p>
     <ol>
-      <li>Move the file into the <strong>exact</strong> scripts folder shown in the Userscripts app (filename must end in <code>.user.js</code>).</li>
-      <li>In Safari, tap <strong>aA → Userscripts</strong> once to refresh the script list.</li>
-      <li>Confirm <strong>X List Focus</strong> is listed and enabled.</li>
-      <li>Open x.com/home and reload.</li>
+      <li>Install <a href="${USERSCRIPTS_APP_URL}">Userscripts</a>.</li>
+      <li>Settings → Safari → Extensions → Userscripts → On, allow All Websites.</li>
+      <li>Open the <code>.user.js</code> link, then tap <strong>aA → Userscripts → Install</strong>.</li>
     </ol>
-
-    <p class="note">If Download only shows code: press and hold the download button → <strong>Download Linked File</strong>. Do not use Share/Shortcuts.</p>
+    <a class="btn secondary" href="${RAW_USERSCRIPT_URL}">Open .user.js for Userscripts</a>
+    <a class="btn secondary" id="download" href="${octetDataUri}" download="x-list-focus.user.js">Download .user.js file</a>
+    <p id="status" class="note" aria-live="polite"></p>
 
     <script id="xlf-source" type="text/plain">${userscript.replace(/<\/script/gi, "<\\/script")}</script>
     <script>
       const status = document.getElementById("status");
       const source = document.getElementById("xlf-source").textContent;
-      const filename = "x-list-focus.user.js";
-
-      function triggerDownload(event) {
+      document.getElementById("download").addEventListener("click", (event) => {
         try {
           const blob = new Blob([source], { type: "application/octet-stream" });
           const url = URL.createObjectURL(blob);
           const link = document.createElement("a");
           link.href = url;
-          link.download = filename;
-          link.rel = "noopener";
+          link.download = "x-list-focus.user.js";
           document.body.appendChild(link);
           link.click();
           link.remove();
           setTimeout(() => URL.revokeObjectURL(url), 2000);
-          status.textContent = "Download started. Check Files → Downloads, then open aA → Userscripts once.";
-          if (event) event.preventDefault();
+          status.textContent = "Download started. Prefer Orion if Userscripts popup never opens.";
+          event.preventDefault();
         } catch (err) {
-          status.textContent = "Press and hold Download → Download Linked File.";
+          status.textContent = "Use the Orion zip download instead.";
         }
-      }
-
-      document.getElementById("download").addEventListener("click", triggerDownload);
+      });
     </script>
   </body>
 </html>
 `;
 
-const installPath = join(root, "docs", "install.html");
 mkdirSync(join(root, "docs"), { recursive: true });
-writeFileSync(installPath, installHtml);
-console.log(`Wrote ${installPath}`);
+writeFileSync(join(root, "docs", "install.html"), installHtml);
+console.log("Wrote docs/install.html");
