@@ -19,6 +19,8 @@ function appendPageHookScript(source) {
 
 async function injectPageHook() {
   if (document.getElementById(PAGE_HOOK_ID)) return;
+  // Userscript builds run page-hook.js in-page already.
+  if (globalThis.__xlfPageHook) return;
 
   const inlineSource = getPageHookSource();
   if (inlineSource) {

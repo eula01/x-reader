@@ -1,6 +1,18 @@
-html.xlf-blocked,
+html.xlf-blocked {
+  overflow: hidden !important;
+  height: 100% !important;
+  height: -webkit-fill-available !important;
+}
+
 html.xlf-blocked body {
   overflow: hidden !important;
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  height: -webkit-fill-available !important;
+  overscroll-behavior: none !important;
+  touch-action: none !important;
 }
 
 #x-list-focus-overlay {

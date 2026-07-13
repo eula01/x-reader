@@ -13,6 +13,37 @@ Chrome and Safari extension that limits X to four list timelines and direct twee
 
 Everything else on x.com shows a full-page overlay with four buttons to your lists.
 
+## Install on iPhone Safari
+
+iPhone Safari cannot load unpacked Chrome extensions. Use the free **Userscripts** app.
+
+### 1. Install Userscripts
+
+1. Install [Userscripts](https://apps.apple.com/app/userscripts/id1609744600) from the App Store
+2. Open the Userscripts app once and set its folder to **On My iPhone → Userscripts**
+3. Enable it in **Settings → Apps → Safari → Extensions → Userscripts** (allow for all websites, or at least x.com)
+
+### 2. Add the script
+
+On your iPhone in **Safari**, open either:
+
+- Install page:  
+  https://htmlpreview.github.io/?https://github.com/eula01/x-reader/blob/cursor/iphone-safari-mobile-f9b2/docs/install.html
+- Or the raw script file:  
+  https://raw.githubusercontent.com/eula01/x-reader/cursor/iphone-safari-mobile-f9b2/userscript/x-list-focus.user.js
+
+Then:
+
+1. Tap **Share → Save to Files**
+2. Save into **On My iPhone → Userscripts** as `x-list-focus.user.js`
+3. Open **x.com** in Safari
+4. Tap **aA** in the address bar → **Manage Extensions** → enable **Userscripts**
+5. Reload the page
+
+You should see the focus overlay on Home/Explore/etc., and your four lists should open normally.
+
+If Share opens a broken Shortcut, tap **Share → Edit Actions** and disable any **Save File** shortcut.
+
 ## Install on Chrome (desktop)
 
 1. Clone this repo
@@ -22,21 +53,6 @@ Everything else on x.com shows a full-page overlay with four buttons to your lis
 5. Select this repo folder (the one containing `manifest.json`)
 
 After pulling updates, click **Reload** on the extension in `chrome://extensions`.
-
-## Install on iPhone Safari
-
-iPhone Safari cannot load unpacked extensions the way Chrome does. Use the **Userscripts** app instead.
-
-### Easy install (recommended)
-
-1. On your iPhone, open this page in **Safari**:
-   **https://htmlpreview.github.io/?https://github.com/eula01/x-reader/blob/cursor/iphone-safari-support-04ec/docs/install.html**
-2. Tap **Download x-list-focus.user.js** (do not use Share or Shortcuts)
-3. Install [Userscripts](https://apps.apple.com/app/userscripts/id1609744600) and enable it in **Settings → Safari → Extensions**
-4. Open **Files → Downloads**, move `x-list-focus.user.js` to **On My iPhone → Userscripts**
-5. Open **x.com** in Safari
-
-If Share keeps opening a broken Shortcut, remove it from the share sheet: tap **Share → Edit Actions** and disable any **Save File** shortcut.
 
 ## Install on Mac Safari
 
@@ -52,7 +68,13 @@ If Share keeps opening a broken Shortcut, remove it from the share sheet: tap **
 
 Edit the `title` field in `config.js` to set fixed button labels. If left blank, the extension learns each list name while you visit that list in the same browser session.
 
-On iPhone, set titles in `config.js` before building the userscript so buttons show the right names without visiting each list first.
+On iPhone, set titles in `config.js`, then rebuild the userscript:
+
+```bash
+node scripts/build-userscript.mjs
+```
+
+Copy the updated `userscript/x-list-focus.user.js` into the Userscripts folder on your iPhone (replace the old file).
 
 ## Test
 
@@ -74,4 +96,5 @@ Open `test/harness.html` in a browser to preview allow/block behavior for a past
 | `content.js` | Overlay injection |
 | `overlay.css` | Full-page blocker UI |
 | `userscript/x-list-focus.user.js` | iPhone Safari userscript (built file) |
-| `scripts/build-userscript.mjs` | Rebuilds the userscript from source files |
+| `docs/install.html` | Mobile-friendly install helper page |
+| `scripts/build-userscript.mjs` | Rebuilds the userscript + install page |
