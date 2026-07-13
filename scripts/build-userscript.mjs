@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const BRANCH = "cursor/iphone-safari-mobile-f9b2";
 const RAW_USERSCRIPT_URL = `https://raw.githubusercontent.com/eula01/x-reader/${BRANCH}/userscript/x-list-focus.user.js`;
+const GITHUB_DOWNLOAD_URL = `https://github.com/eula01/x-reader/raw/${BRANCH}/userscript/x-list-focus.user.js`;
 
 function read(path) {
   return readFileSync(join(root, path), "utf8");
@@ -41,14 +42,15 @@ mkdirSync(join(root, "userscript"), { recursive: true });
 writeFileSync(outputPath, userscript);
 console.log(`Wrote ${outputPath}`);
 
-const dataUri = `data:text/javascript;charset=utf-8,${encodeURIComponent(userscript)}`;
+// application/octet-stream makes Safari treat this as a file download, not a webpage.
+const octetDataUri = `data:application/octet-stream;charset=utf-8,${encodeURIComponent(userscript)}`;
 
 const installHtml = `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>Install X List Focus on iPhone</title>
+    <title>Download X List Focus</title>
     <style>
       :root {
         color-scheme: light;
@@ -82,29 +84,28 @@ const installHtml = `<!doctype html>
       li {
         margin-bottom: 12px;
       }
-      a.btn,
-      button.btn {
+      .btn {
         display: block;
         width: 100%;
         box-sizing: border-box;
-        min-height: 48px;
+        min-height: 52px;
         margin: 0 0 12px;
-        padding: 12px 16px;
+        padding: 14px 16px;
         border: 0;
         border-radius: 14px;
         background: #1d9bf0;
-        color: #fff;
-        font-size: 17px;
+        color: #fff !important;
+        font-size: 18px;
         font-weight: 700;
         text-align: center;
         text-decoration: none;
         line-height: 1.3;
         -webkit-tap-highlight-color: transparent;
+        cursor: pointer;
       }
-      a.btn.secondary,
-      button.btn.secondary {
+      .btn.secondary {
         background: #e7e9ea;
-        color: #0f1419;
+        color: #0f1419 !important;
       }
       .status {
         min-height: 1.25em;
@@ -112,41 +113,76 @@ const installHtml = `<!doctype html>
         font-weight: 600;
         color: #0f1419;
       }
+      .warn {
+        padding: 12px 14px;
+        margin: 0 0 20px;
+        border-radius: 12px;
+        background: #fff4cc;
+        color: #733f00;
+        font-size: 15px;
+      }
       .note {
         font-size: 14px;
-      }
-      code {
-        font-size: 0.92em;
-        word-break: break-all;
       }
     </style>
   </head>
   <body>
-    <h1>Install on iPhone Safari</h1>
-    <p>X List Focus runs as a userscript in Safari. Chrome “Load unpacked” does not work on iPhone.</p>
+    <h1>Download X List Focus</h1>
+    <p class="warn">Do <strong>not</strong> use Share or Shortcuts. They fail on this file. Use the blue Download button only.</p>
 
-    <a class="btn" href="${RAW_USERSCRIPT_URL}">Open userscript file</a>
-    <a class="btn secondary" id="download" href="${dataUri}" download="x-list-focus.user.js">Download x-list-focus.user.js</a>
+    <a
+      class="btn"
+      id="download"
+      href="${octetDataUri}"
+      download="x-list-focus.user.js"
+    >Download x-list-focus.user.js</a>
+
+    <a
+      class="btn secondary"
+      href="${GITHUB_DOWNLOAD_URL}"
+      download="x-list-focus.user.js"
+    >Backup download link</a>
+
     <p id="status" class="status" aria-live="polite"></p>
 
-    <h2>Setup steps</h2>
+    <h2>After it downloads</h2>
     <ol>
-      <li>Install <strong>Userscripts</strong> from the App Store (by Justin Wasack).</li>
-      <li>Open the Userscripts app once, set the directory to <strong>On My iPhone → Userscripts</strong> (create the folder if needed), then leave the app.</li>
-      <li>Go to <strong>Settings → Apps → Safari → Extensions → Userscripts</strong> and turn it <strong>on</strong>. Allow it for all websites (or at least x.com).</li>
-      <li>Tap <strong>Open userscript file</strong> above (or Download). In Safari, tap the <strong>Share</strong> button → <strong>Save to Files</strong> → choose <strong>On My iPhone → Userscripts</strong> → Save.</li>
-      <li>Open <strong>x.com</strong> in Safari. Tap <strong>aA</strong> in the address bar → <strong>Manage Extensions</strong> → enable <strong>Userscripts</strong>.</li>
-      <li>Reload x.com. Non-list pages should show the focus overlay with your four list buttons.</li>
+      <li>Install <strong>Userscripts</strong> from the App Store if you have not already.</li>
+      <li>Open <strong>Files → Downloads</strong>.</li>
+      <li>Long-press <strong>x-list-focus.user.js</strong> → <strong>Move</strong> → <strong>On My iPhone → Userscripts</strong>.</li>
+      <li>Enable Userscripts in <strong>Settings → Apps → Safari → Extensions</strong>.</li>
+      <li>Open <strong>x.com</strong>, tap <strong>aA → Manage Extensions</strong>, enable Userscripts, reload.</li>
     </ol>
 
-    <p class="note">If Share opens a broken Shortcut instead of Save to Files: Share → Edit Actions → disable any Save File shortcut, then try again.</p>
-    <p class="note">Direct file URL:<br /><code>${RAW_USERSCRIPT_URL}</code></p>
+    <p class="note">If tapping Download only shows code: <strong>press and hold</strong> the blue button, then choose <strong>Download Linked File</strong>.</p>
 
+    <script id="xlf-source" type="text/plain">${userscript.replace(/<\/script/gi, "<\\/script")}</script>
     <script>
       const status = document.getElementById("status");
-      document.getElementById("download").addEventListener("click", () => {
-        status.textContent = "If nothing downloads, use Open userscript file → Share → Save to Files.";
-      });
+      const source = document.getElementById("xlf-source").textContent;
+      const filename = "x-list-focus.user.js";
+
+      function triggerDownload(event) {
+        // Prefer a real file download over Share / Shortcuts.
+        try {
+          const blob = new Blob([source], { type: "application/octet-stream" });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = url;
+          link.download = filename;
+          link.rel = "noopener";
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 2000);
+          status.textContent = "Download started. Check Files → Downloads.";
+          if (event) event.preventDefault();
+        } catch (err) {
+          status.textContent = "Tap-and-hold the blue button → Download Linked File.";
+        }
+      }
+
+      document.getElementById("download").addEventListener("click", triggerDownload);
     </script>
   </body>
 </html>

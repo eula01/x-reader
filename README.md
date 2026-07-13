@@ -23,26 +23,23 @@ iPhone Safari cannot load unpacked Chrome extensions. Use the free **Userscripts
 2. Open the Userscripts app once and set its folder to **On My iPhone → Userscripts**
 3. Enable it in **Settings → Apps → Safari → Extensions → Userscripts** (allow for all websites, or at least x.com)
 
-### 2. Add the script
+### 2. Download the script (no Share / Shortcuts)
 
-On your iPhone in **Safari**, open either:
+On your iPhone in **Safari**, open the download page:
 
-- Install page:  
-  https://htmlpreview.github.io/?https://github.com/eula01/x-reader/blob/cursor/iphone-safari-mobile-f9b2/docs/install.html
-- Or the raw script file:  
-  https://raw.githubusercontent.com/eula01/x-reader/cursor/iphone-safari-mobile-f9b2/userscript/x-list-focus.user.js
+https://htmlpreview.github.io/?https://github.com/eula01/x-reader/blob/cursor/iphone-safari-mobile-f9b2/docs/install.html
 
-Then:
+1. Tap the blue **Download x-list-focus.user.js** button  
+   (if Safari only shows code, **press and hold** the button → **Download Linked File**)
+2. Open **Files → Downloads**
+3. Long-press the file → **Move** → **On My iPhone → Userscripts**
+4. Open **x.com** in Safari
+5. Tap **aA → Manage Extensions** → enable **Userscripts** → reload
 
-1. Tap **Share → Save to Files**
-2. Save into **On My iPhone → Userscripts** as `x-list-focus.user.js`
-3. Open **x.com** in Safari
-4. Tap **aA** in the address bar → **Manage Extensions** → enable **Userscripts**
-5. Reload the page
+Do **not** use Share or Shortcuts — they fail with conversion errors on this file.
 
-You should see the focus overlay on Home/Explore/etc., and your four lists should open normally.
-
-If Share opens a broken Shortcut, tap **Share → Edit Actions** and disable any **Save File** shortcut.
+Backup file link (then press-and-hold → Download Linked File):  
+https://github.com/eula01/x-reader/raw/cursor/iphone-safari-mobile-f9b2/userscript/x-list-focus.user.js
 
 ## Install on Chrome (desktop)
 
