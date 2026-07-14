@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           X List Focus
 // @description    Limits X to four list timelines and direct tweet links.
-// @version        1.0.6
+// @version        1.0.7
 // @match          https://x.com/*
 // @match          https://www.x.com/*
 // @match          https://twitter.com/*
@@ -114,6 +114,20 @@ function isAllowedXUrl(href) {
   }
 
   if (/^\/i\/status\/\d+/.test(path)) {
+    return true;
+  }
+
+  // Sign-in / account recovery / OAuth flows.
+  if (
+    path === "/login" ||
+    path === "/logout" ||
+    path === "/signup" ||
+    path.startsWith("/i/flow/") ||
+    path.startsWith("/account/") ||
+    path.startsWith("/oauth") ||
+    path.startsWith("/i/oauth") ||
+    path.startsWith("/i/sessions")
+  ) {
     return true;
   }
 

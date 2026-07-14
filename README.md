@@ -10,6 +10,7 @@ Chrome and Safari extension that limits X to four list timelines and direct twee
   - https://x.com/i/lists/2059974188396351918
   - https://x.com/i/lists/2063220039365415064
 - Direct tweet links, e.g. `https://x.com/user/status/1234567890`
+- Sign-in and account flows, e.g. `/login`, `/i/flow/login`, `/account/access`
 
 Everything else on x.com shows a full-page overlay with four buttons to your lists.
 

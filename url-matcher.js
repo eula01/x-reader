@@ -33,6 +33,20 @@ function isAllowedXUrl(href) {
     return true;
   }
 
+  // Sign-in / account recovery / OAuth flows.
+  if (
+    path === "/login" ||
+    path === "/logout" ||
+    path === "/signup" ||
+    path.startsWith("/i/flow/") ||
+    path.startsWith("/account/") ||
+    path.startsWith("/oauth") ||
+    path.startsWith("/i/oauth") ||
+    path.startsWith("/i/sessions")
+  ) {
+    return true;
+  }
+
   return false;
 }
 
