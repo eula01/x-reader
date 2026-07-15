@@ -13,6 +13,23 @@ That means:
 
 There is no way to delete Safari or stop iOS from opening some links there. The fix is to make the script run **inside Safari**.
 
+## Why extensions are greyed out in Settings
+
+If Userscripts / Stay / Tampermonkey appear dimmed in **Settings → Safari → Extensions** (even if they say On), Screen Time is blocking Safari extensions.
+
+Fix:
+
+1. **Settings → Screen Time → Content & Privacy Restrictions**
+2. Either turn **Content & Privacy Restrictions** Off, **or**
+3. Tap **Content Restrictions → Web Content** → set to **Unrestricted Access**
+4. Go back to **Settings → Safari → Extensions**
+5. Tap **Userscripts** / **Stay** / **Tampermonkey**
+6. Confirm it is On and allowed for **All Websites** (or x.com)
+
+After the extension is fully enabled, you can turn Web Content restrictions back on if you need them — Apple only blocks *changing* extension settings while restrictions are active.
+
+Also check **Settings → General → VPN & Device Management** for a school/work profile that might lock extensions.
+
 ## Why `aA → Userscripts` did nothing
 
 Almost always this:
