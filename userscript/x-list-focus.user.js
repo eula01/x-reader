@@ -1,47 +1,17 @@
 // ==UserScript==
 // @name           X List Focus
-// @description    Limits X to four list timelines and direct tweet links.
-// @version        1.0.7
+// @namespace      https://github.com/eula01/x-reader
+// @description    Limits X to four list timelines, direct tweets, and login flows.
+// @version        1.0.8
+// @author         eula01
 // @match          https://x.com/*
 // @match          https://www.x.com/*
 // @match          https://twitter.com/*
 // @match          https://www.twitter.com/*
 // @run-at         document-start
+// @inject-into    content
 // @grant          none
 // ==/UserScript==
-
-(function () {
-  if (window.__xlfPageHook) return;
-  window.__xlfPageHook = true;
-
-  function notify() {
-    window.dispatchEvent(
-      new CustomEvent("xlf-location-change", { detail: location.href })
-    );
-  }
-
-  function installHistoryHook() {
-    for (const type of ["pushState", "replaceState"]) {
-      const original = History.prototype[type];
-      if (original.__xlfWrapped) continue;
-
-      const wrapped = function (...args) {
-        const result = original.apply(this, args);
-        notify();
-        return result;
-      };
-      wrapped.__xlfWrapped = true;
-      History.prototype[type] = wrapped;
-    }
-  }
-
-  installHistoryHook();
-  window.addEventListener("popstate", notify);
-  window.addEventListener("hashchange", notify);
-
-  // X or other libs may replace history methods after load.
-  setInterval(installHistoryHook, 1000);
-})();
 
 globalThis.XLF_OVERLAY_CSS = "html.xlf-blocked {\n  overflow: hidden !important;\n  height: 100% !important;\n  height: -webkit-fill-available !important;\n}\n\nhtml.xlf-blocked body {\n  overflow: hidden !important;\n  position: fixed !important;\n  inset: 0 !important;\n  width: 100% !important;\n  height: 100% !important;\n  height: -webkit-fill-available !important;\n  overscroll-behavior: none !important;\n  touch-action: none !important;\n}\n\n#x-list-focus-overlay {\n  all: initial;\n  position: fixed;\n  inset: 0;\n  z-index: 2147483647;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  box-sizing: border-box;\n  width: 100%;\n  min-height: 100vh;\n  min-height: -webkit-fill-available;\n  min-height: 100dvh;\n  padding: max(16px, env(safe-area-inset-top, 0px))\n    max(16px, env(safe-area-inset-right, 0px))\n    max(16px, env(safe-area-inset-bottom, 0px))\n    max(16px, env(safe-area-inset-left, 0px));\n  background: #ffffff;\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica,\n    Arial, sans-serif;\n  -webkit-text-size-adjust: 100%;\n  overscroll-behavior: none;\n}\n\n#x-list-focus-overlay * {\n  box-sizing: border-box;\n}\n\n#x-list-focus-overlay .xlf-panel {\n  width: min(420px, calc(100vw - 32px));\n  display: flex;\n  flex-direction: column;\n  gap: 20px;\n}\n\n#x-list-focus-overlay .xlf-title {\n  margin: 0;\n  color: #0f1419;\n  font-size: 15px;\n  line-height: 1.5;\n  text-align: center;\n}\n\n#x-list-focus-overlay .xlf-buttons {\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n}\n\n#x-list-focus-overlay .xlf-btn {\n  display: block;\n  width: 100%;\n  min-height: 44px;\n  padding: 14px 16px;\n  border: 1px solid #cfd9de;\n  border-radius: 16px;\n  background: #ffffff;\n  color: #0f1419;\n  font-size: 15px;\n  font-weight: 600;\n  line-height: 1.35;\n  text-align: center;\n  text-decoration: none;\n  cursor: pointer;\n  white-space: normal;\n  touch-action: manipulation;\n  -webkit-tap-highlight-color: transparent;\n  transition: background 120ms ease, border-color 120ms ease;\n}\n\n#x-list-focus-overlay .xlf-btn:hover {\n  background: #f7f9f9;\n  border-color: #536471;\n}\n\n#x-list-focus-overlay .xlf-btn:focus-visible {\n  outline: 2px solid #1d9bf0;\n  outline-offset: 2px;\n}";
 
