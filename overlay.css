@@ -21,7 +21,7 @@ html.xlf-blocked body {
   inset: 0;
   z-index: 2147483647;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   box-sizing: border-box;
   width: 100%;
@@ -50,8 +50,8 @@ html.xlf-blocked body {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin: auto;
-  padding: 8px 0;
+  margin: 24px auto;
+  padding: 8px 0 32px;
 }
 
 #x-list-focus-overlay .xlf-title {

@@ -137,6 +137,11 @@ function watchCurrentListTitle() {
 
 function ensureOverlay() {
   let overlay = document.getElementById(OVERLAY_ID);
+  // Rebuild if this is an older overlay without profile buttons.
+  if (overlay && !overlay.querySelector("[data-profile-handle]")) {
+    overlay.remove();
+    overlay = null;
+  }
   if (overlay) return overlay;
 
   overlay = document.createElement("div");

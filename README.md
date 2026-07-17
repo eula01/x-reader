@@ -57,11 +57,13 @@ If you have an Apple Developer account, upload `dist/x-list-focus-extension.zip`
 
 ## Install on Chrome (desktop)
 
-1. Clone this repo
+1. Clone this repo and check out the branch with the latest overlay (or pull latest)
 2. Open `chrome://extensions`
 3. Enable **Developer mode**
-4. Click **Load unpacked**
-5. Select this repo folder (the one containing `manifest.json`)
+4. Click **Load unpacked** and select this repo folder (the one containing `manifest.json`)
+5. After any update: click **Reload** on the extension card, then hard-refresh x.com (`Cmd/Ctrl+Shift+R`)
+
+You should see **Lists** and **Profiles** sections on the block screen (version **1.0.10+**).
 
 ## Install on Mac Safari
 
