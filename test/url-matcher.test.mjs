@@ -29,6 +29,39 @@ for (const url of allowedTweets) {
   assert.equal(isAllowedXUrl(url), true, `should allow ${url}`);
 }
 
+const allowedAuth = [
+  "https://x.com/login",
+  "https://x.com/logout",
+  "https://x.com/signup",
+  "https://x.com/i/flow/login",
+  "https://x.com/i/flow/signup",
+  "https://x.com/i/flow/password_reset",
+  "https://x.com/i/flow/single_sign_on",
+  "https://x.com/account/access",
+  "https://x.com/oauth/authenticate",
+  "https://x.com/i/oauth2/authorize",
+  "https://twitter.com/i/flow/login",
+];
+
+for (const url of allowedAuth) {
+  assert.equal(isAllowedXUrl(url), true, `should allow ${url}`);
+}
+
+const allowedProfiles = [
+  "https://x.com/asklivermore",
+  "https://x.com/asklivermore/",
+  "https://x.com/asklivermore/with_replies",
+  "https://x.com/mat78704",
+  "https://x.com/labubu_trader",
+  "https://x.com/Franktradinglog",
+  "https://x.com/FRANKTRADINGLOG",
+  "https://twitter.com/mat78704",
+];
+
+for (const url of allowedProfiles) {
+  assert.equal(isAllowedXUrl(url), true, `should allow ${url}`);
+}
+
 const blocked = [
   "https://x.com/home",
   "https://x.com/",
