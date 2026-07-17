@@ -2,7 +2,7 @@
 // @name           X List Focus
 // @namespace      https://github.com/eula01/x-reader
 // @description    Limits X to four list timelines, direct tweets, and login flows.
-// @version        1.0.8
+// @version        1.0.9
 // @author         eula01
 // @match          https://x.com/*
 // @match          https://www.x.com/*
@@ -13,9 +13,10 @@
 // @grant          none
 // ==/UserScript==
 
-globalThis.XLF_OVERLAY_CSS = "html.xlf-blocked {\n  overflow: hidden !important;\n  height: 100% !important;\n  height: -webkit-fill-available !important;\n}\n\nhtml.xlf-blocked body {\n  overflow: hidden !important;\n  position: fixed !important;\n  inset: 0 !important;\n  width: 100% !important;\n  height: 100% !important;\n  height: -webkit-fill-available !important;\n  overscroll-behavior: none !important;\n  touch-action: none !important;\n}\n\n#x-list-focus-overlay {\n  all: initial;\n  position: fixed;\n  inset: 0;\n  z-index: 2147483647;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  box-sizing: border-box;\n  width: 100%;\n  min-height: 100vh;\n  min-height: -webkit-fill-available;\n  min-height: 100dvh;\n  padding: max(16px, env(safe-area-inset-top, 0px))\n    max(16px, env(safe-area-inset-right, 0px))\n    max(16px, env(safe-area-inset-bottom, 0px))\n    max(16px, env(safe-area-inset-left, 0px));\n  background: #ffffff;\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica,\n    Arial, sans-serif;\n  -webkit-text-size-adjust: 100%;\n  overscroll-behavior: none;\n}\n\n#x-list-focus-overlay * {\n  box-sizing: border-box;\n}\n\n#x-list-focus-overlay .xlf-panel {\n  width: min(420px, calc(100vw - 32px));\n  display: flex;\n  flex-direction: column;\n  gap: 20px;\n}\n\n#x-list-focus-overlay .xlf-title {\n  margin: 0;\n  color: #0f1419;\n  font-size: 15px;\n  line-height: 1.5;\n  text-align: center;\n}\n\n#x-list-focus-overlay .xlf-buttons {\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n}\n\n#x-list-focus-overlay .xlf-btn {\n  display: block;\n  width: 100%;\n  min-height: 44px;\n  padding: 14px 16px;\n  border: 1px solid #cfd9de;\n  border-radius: 16px;\n  background: #ffffff;\n  color: #0f1419;\n  font-size: 15px;\n  font-weight: 600;\n  line-height: 1.35;\n  text-align: center;\n  text-decoration: none;\n  cursor: pointer;\n  white-space: normal;\n  touch-action: manipulation;\n  -webkit-tap-highlight-color: transparent;\n  transition: background 120ms ease, border-color 120ms ease;\n}\n\n#x-list-focus-overlay .xlf-btn:hover {\n  background: #f7f9f9;\n  border-color: #536471;\n}\n\n#x-list-focus-overlay .xlf-btn:focus-visible {\n  outline: 2px solid #1d9bf0;\n  outline-offset: 2px;\n}";
+globalThis.XLF_OVERLAY_CSS = "html.xlf-blocked {\n  overflow: hidden !important;\n  height: 100% !important;\n  height: -webkit-fill-available !important;\n}\n\nhtml.xlf-blocked body {\n  overflow: hidden !important;\n  position: fixed !important;\n  inset: 0 !important;\n  width: 100% !important;\n  height: 100% !important;\n  height: -webkit-fill-available !important;\n  overscroll-behavior: none !important;\n  touch-action: none !important;\n}\n\n#x-list-focus-overlay {\n  all: initial;\n  position: fixed;\n  inset: 0;\n  z-index: 2147483647;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  box-sizing: border-box;\n  width: 100%;\n  min-height: 100vh;\n  min-height: -webkit-fill-available;\n  min-height: 100dvh;\n  padding: max(16px, env(safe-area-inset-top, 0px))\n    max(16px, env(safe-area-inset-right, 0px))\n    max(16px, env(safe-area-inset-bottom, 0px))\n    max(16px, env(safe-area-inset-left, 0px));\n  background: #ffffff;\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica,\n    Arial, sans-serif;\n  -webkit-text-size-adjust: 100%;\n  overscroll-behavior: none;\n  overflow-y: auto;\n  -webkit-overflow-scrolling: touch;\n}\n\n#x-list-focus-overlay * {\n  box-sizing: border-box;\n}\n\n#x-list-focus-overlay .xlf-panel {\n  width: min(420px, calc(100vw - 32px));\n  display: flex;\n  flex-direction: column;\n  gap: 16px;\n  margin: auto;\n  padding: 8px 0;\n}\n\n#x-list-focus-overlay .xlf-title {\n  margin: 0;\n  color: #0f1419;\n  font-size: 15px;\n  line-height: 1.5;\n  text-align: center;\n}\n\n#x-list-focus-overlay .xlf-section {\n  margin: 4px 0 0;\n  color: #536471;\n  font-size: 13px;\n  font-weight: 700;\n  letter-spacing: 0.02em;\n  text-transform: uppercase;\n  text-align: left;\n}\n\n#x-list-focus-overlay .xlf-buttons {\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n}\n\n#x-list-focus-overlay .xlf-btn {\n  display: block;\n  width: 100%;\n  min-height: 44px;\n  padding: 14px 16px;\n  border: 1px solid #cfd9de;\n  border-radius: 16px;\n  background: #ffffff;\n  color: #0f1419;\n  font-size: 15px;\n  font-weight: 600;\n  line-height: 1.35;\n  text-align: center;\n  text-decoration: none;\n  cursor: pointer;\n  white-space: normal;\n  touch-action: manipulation;\n  -webkit-tap-highlight-color: transparent;\n  transition: background 120ms ease, border-color 120ms ease;\n}\n\n#x-list-focus-overlay .xlf-btn:hover {\n  background: #f7f9f9;\n  border-color: #536471;\n}\n\n#x-list-focus-overlay .xlf-btn:focus-visible {\n  outline: 2px solid #1d9bf0;\n  outline-offset: 2px;\n}";
 
 /** @typedef {{ id: string; title: string; url: string }} AllowedList */
+/** @typedef {{ handle: string; title: string; url: string }} AllowedProfile */
 
 /** @type {AllowedList[]} */
 globalThis.ALLOWED_LISTS = [
@@ -41,8 +42,36 @@ globalThis.ALLOWED_LISTS = [
   },
 ];
 
+/** @type {AllowedProfile[]} */
+globalThis.ALLOWED_PROFILES = [
+  {
+    handle: "asklivermore",
+    title: "@asklivermore",
+    url: "https://x.com/asklivermore",
+  },
+  {
+    handle: "mat78704",
+    title: "@mat78704",
+    url: "https://x.com/mat78704",
+  },
+  {
+    handle: "labubu_trader",
+    title: "@labubu_trader",
+    url: "https://x.com/labubu_trader",
+  },
+  {
+    handle: "Franktradinglog",
+    title: "@Franktradinglog",
+    url: "https://x.com/Franktradinglog",
+  },
+];
+
 globalThis.ALLOWED_LIST_IDS = new Set(
   globalThis.ALLOWED_LISTS.map((list) => list.id)
+);
+
+globalThis.ALLOWED_PROFILE_HANDLES = new Set(
+  globalThis.ALLOWED_PROFILES.map((profile) => profile.handle.toLowerCase())
 );
 
 globalThis.X_HOSTS = new Set([
@@ -60,6 +89,7 @@ globalThis.X_HOSTS = new Set([
 function isAllowedXUrl(href) {
   const X_HOSTS = globalThis.X_HOSTS;
   const ALLOWED_LIST_IDS = globalThis.ALLOWED_LIST_IDS;
+  const ALLOWED_PROFILE_HANDLES = globalThis.ALLOWED_PROFILE_HANDLES;
 
   let url;
   try {
@@ -87,6 +117,16 @@ function isAllowedXUrl(href) {
     return true;
   }
 
+  const profileMatch = path.match(
+    /^\/([^/]+)(?:\/(with_replies|media|likes|highlights))?$/i
+  );
+  if (
+    profileMatch &&
+    ALLOWED_PROFILE_HANDLES.has(profileMatch[1].toLowerCase())
+  ) {
+    return true;
+  }
+
   // Sign-in / account recovery / OAuth flows.
   if (
     path === "/login" ||
@@ -111,6 +151,8 @@ if (typeof module !== "undefined") {
     isAllowedXUrl,
     ALLOWED_LISTS: globalThis.ALLOWED_LISTS,
     ALLOWED_LIST_IDS: globalThis.ALLOWED_LIST_IDS,
+    ALLOWED_PROFILES: globalThis.ALLOWED_PROFILES,
+    ALLOWED_PROFILE_HANDLES: globalThis.ALLOWED_PROFILE_HANDLES,
     X_HOSTS: globalThis.X_HOSTS,
   };
 }
@@ -119,6 +161,7 @@ const OVERLAY_ID = "x-list-focus-overlay";
 const PAGE_HOOK_ID = "x-list-focus-page-hook";
 const STYLE_ID = "x-list-focus-styles";
 const ALLOWED_LISTS = globalThis.ALLOWED_LISTS;
+const ALLOWED_PROFILES = globalThis.ALLOWED_PROFILES ?? [];
 const sessionTitles = Object.create(null);
 let titleWatchTimer = null;
 
@@ -259,14 +302,19 @@ function ensureOverlay() {
   overlay.id = OVERLAY_ID;
   overlay.setAttribute("role", "dialog");
   overlay.setAttribute("aria-modal", "true");
-  overlay.setAttribute("aria-label", "X access limited to your lists");
+  overlay.setAttribute("aria-label", "X access limited to your lists and profiles");
 
   const panel = document.createElement("div");
   panel.className = "xlf-panel";
 
   const title = document.createElement("p");
   title.className = "xlf-title";
-  title.textContent = "Only your lists and direct tweet links are allowed.";
+  title.textContent =
+    "Only your lists, allowed profiles, and direct tweet links are available.";
+
+  const listHeading = document.createElement("p");
+  listHeading.className = "xlf-section";
+  listHeading.textContent = "Lists";
 
   const buttons = document.createElement("div");
   buttons.className = "xlf-buttons";
@@ -280,8 +328,29 @@ function ensureOverlay() {
     buttons.appendChild(link);
   }
 
+  const profileHeading = document.createElement("p");
+  profileHeading.className = "xlf-section";
+  profileHeading.textContent = "Profiles";
+
+  const profiles = document.createElement("div");
+  profiles.className = "xlf-buttons";
+
+  for (const profile of ALLOWED_PROFILES) {
+    const link = document.createElement("a");
+    link.className = "xlf-btn xlf-btn-profile";
+    link.href = profile.url;
+    link.dataset.profileHandle = profile.handle;
+    link.textContent = profile.title || `@${profile.handle}`;
+    profiles.appendChild(link);
+  }
+
   panel.appendChild(title);
+  panel.appendChild(listHeading);
   panel.appendChild(buttons);
+  if (ALLOWED_PROFILES.length) {
+    panel.appendChild(profileHeading);
+    panel.appendChild(profiles);
+  }
   overlay.appendChild(panel);
 
   return overlay;

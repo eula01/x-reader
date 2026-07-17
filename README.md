@@ -5,10 +5,11 @@ Limits X to four list timelines, direct tweet links, and sign-in flows.
 ## Allowed on X
 
 - Your four lists, including subpages like `/members`
+- Allowed profiles: `@asklivermore`, `@mat78704`, `@labubu_trader`, `@Franktradinglog`
 - Direct tweet links, e.g. `https://x.com/user/status/1234567890`
 - Sign-in / recovery / OAuth: `/login`, `/i/flow/*`, `/account/*`, etc.
 
-Everything else on x.com shows a full-page overlay with four list buttons.
+Everything else on x.com shows a full-page overlay with list and profile buttons.
 
 ## Install on iPhone Safari (required path)
 

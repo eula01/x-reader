@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "X List Focus",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Limits X to four list timelines and direct tweet links.",
   "browser_specific_settings": {
     "safari": {

@@ -2,6 +2,7 @@ const OVERLAY_ID = "x-list-focus-overlay";
 const PAGE_HOOK_ID = "x-list-focus-page-hook";
 const STYLE_ID = "x-list-focus-styles";
 const ALLOWED_LISTS = globalThis.ALLOWED_LISTS;
+const ALLOWED_PROFILES = globalThis.ALLOWED_PROFILES ?? [];
 const sessionTitles = Object.create(null);
 let titleWatchTimer = null;
 
@@ -142,14 +143,19 @@ function ensureOverlay() {
   overlay.id = OVERLAY_ID;
   overlay.setAttribute("role", "dialog");
   overlay.setAttribute("aria-modal", "true");
-  overlay.setAttribute("aria-label", "X access limited to your lists");
+  overlay.setAttribute("aria-label", "X access limited to your lists and profiles");
 
   const panel = document.createElement("div");
   panel.className = "xlf-panel";
 
   const title = document.createElement("p");
   title.className = "xlf-title";
-  title.textContent = "Only your lists and direct tweet links are allowed.";
+  title.textContent =
+    "Only your lists, allowed profiles, and direct tweet links are available.";
+
+  const listHeading = document.createElement("p");
+  listHeading.className = "xlf-section";
+  listHeading.textContent = "Lists";
 
   const buttons = document.createElement("div");
   buttons.className = "xlf-buttons";
@@ -163,8 +169,29 @@ function ensureOverlay() {
     buttons.appendChild(link);
   }
 
+  const profileHeading = document.createElement("p");
+  profileHeading.className = "xlf-section";
+  profileHeading.textContent = "Profiles";
+
+  const profiles = document.createElement("div");
+  profiles.className = "xlf-buttons";
+
+  for (const profile of ALLOWED_PROFILES) {
+    const link = document.createElement("a");
+    link.className = "xlf-btn xlf-btn-profile";
+    link.href = profile.url;
+    link.dataset.profileHandle = profile.handle;
+    link.textContent = profile.title || `@${profile.handle}`;
+    profiles.appendChild(link);
+  }
+
   panel.appendChild(title);
+  panel.appendChild(listHeading);
   panel.appendChild(buttons);
+  if (ALLOWED_PROFILES.length) {
+    panel.appendChild(profileHeading);
+    panel.appendChild(profiles);
+  }
   overlay.appendChild(panel);
 
   return overlay;

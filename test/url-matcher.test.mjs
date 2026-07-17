@@ -47,6 +47,21 @@ for (const url of allowedAuth) {
   assert.equal(isAllowedXUrl(url), true, `should allow ${url}`);
 }
 
+const allowedProfiles = [
+  "https://x.com/asklivermore",
+  "https://x.com/asklivermore/",
+  "https://x.com/asklivermore/with_replies",
+  "https://x.com/mat78704",
+  "https://x.com/labubu_trader",
+  "https://x.com/Franktradinglog",
+  "https://x.com/FRANKTRADINGLOG",
+  "https://twitter.com/mat78704",
+];
+
+for (const url of allowedProfiles) {
+  assert.equal(isAllowedXUrl(url), true, `should allow ${url}`);
+}
+
 const blocked = [
   "https://x.com/home",
   "https://x.com/",

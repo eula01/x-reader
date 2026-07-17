@@ -37,6 +37,8 @@ html.xlf-blocked body {
     Arial, sans-serif;
   -webkit-text-size-adjust: 100%;
   overscroll-behavior: none;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 #x-list-focus-overlay * {
@@ -47,7 +49,9 @@ html.xlf-blocked body {
   width: min(420px, calc(100vw - 32px));
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
+  margin: auto;
+  padding: 8px 0;
 }
 
 #x-list-focus-overlay .xlf-title {
@@ -56,6 +60,16 @@ html.xlf-blocked body {
   font-size: 15px;
   line-height: 1.5;
   text-align: center;
+}
+
+#x-list-focus-overlay .xlf-section {
+  margin: 4px 0 0;
+  color: #536471;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-align: left;
 }
 
 #x-list-focus-overlay .xlf-buttons {

@@ -6,6 +6,7 @@
 function isAllowedXUrl(href) {
   const X_HOSTS = globalThis.X_HOSTS;
   const ALLOWED_LIST_IDS = globalThis.ALLOWED_LIST_IDS;
+  const ALLOWED_PROFILE_HANDLES = globalThis.ALLOWED_PROFILE_HANDLES;
 
   let url;
   try {
@@ -33,6 +34,16 @@ function isAllowedXUrl(href) {
     return true;
   }
 
+  const profileMatch = path.match(
+    /^\/([^/]+)(?:\/(with_replies|media|likes|highlights))?$/i
+  );
+  if (
+    profileMatch &&
+    ALLOWED_PROFILE_HANDLES.has(profileMatch[1].toLowerCase())
+  ) {
+    return true;
+  }
+
   // Sign-in / account recovery / OAuth flows.
   if (
     path === "/login" ||
@@ -57,6 +68,8 @@ if (typeof module !== "undefined") {
     isAllowedXUrl,
     ALLOWED_LISTS: globalThis.ALLOWED_LISTS,
     ALLOWED_LIST_IDS: globalThis.ALLOWED_LIST_IDS,
+    ALLOWED_PROFILES: globalThis.ALLOWED_PROFILES,
+    ALLOWED_PROFILE_HANDLES: globalThis.ALLOWED_PROFILE_HANDLES,
     X_HOSTS: globalThis.X_HOSTS,
   };
 }
